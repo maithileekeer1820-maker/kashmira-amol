@@ -1,0 +1,2898 @@
+/* ========================================
+   CUSTOM FONTS
+======================================== */
+/* ========================================
+   DOORS LOAD FIRST
+======================================== */
+
+body:not(.doors-loaded) .wedding-details,
+body:not(.doors-loaded) .save-date-section,
+body:not(.doors-loaded) .festivities-section,
+body:not(.doors-loaded) .location-section,
+body:not(.doors-loaded) .regards-section {
+  visibility: hidden;
+}
+
+/* Prevent other section background images
+   from loading before the doors */
+
+body:not(.doors-loaded) .wedding-details {
+  background-image: none;
+}
+
+body:not(.doors-loaded) .save-date-section {
+  background-image: none;
+}
+
+body:not(.doors-loaded) .festivities-section {
+  background-image: none;
+}
+
+body:not(.doors-loaded) .location-section {
+  background-image: none;
+}
+
+body:not(.doors-loaded) .regards-section {
+  background-image: none;
+}
+
+/* ========================================
+   SOPHILLIA
+======================================== */
+
+@font-face {
+  font-family: "Sophillia";
+  src: url("./fonts/sophillia/Sophillia.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ========================================
+   CINZEL
+======================================== */
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("./fonts/cinzel/Cinzel-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("./fonts/cinzel/Cinzel-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("./fonts/cinzel/Cinzel-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("./fonts/cinzel/Cinzel-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ========================================
+   CORMORANT GARAMOND
+======================================== */
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("./fonts/cormorant_garamond/CormorantGaramond-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("./fonts/cormorant_garamond/CormorantGaramond-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("./fonts/cormorant_garamond/CormorantGaramond-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("./fonts/cormorant_garamond/CormorantGaramond-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ========================================
+   NOTO SERIF DEVANAGARI
+======================================== */
+
+@font-face {
+  font-family: "Noto Serif Devanagari";
+  src: url("./fonts/noto_serif_devanagari/NotoSerifDevanagari-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Serif Devanagari";
+  src: url("./fonts/noto_serif_devanagari/NotoSerifDevanagari-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Serif Devanagari";
+  src: url("./fonts/noto_serif_devanagari/NotoSerifDevanagari-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========================================
+   RESET & BASE
+======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  height: auto;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior-y: auto;
+  scroll-behavior: smooth;
+}
+html {
+  scroll-snap-type: y mandatory;
+}
+
+.wedding-details,
+.save-date-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+body {
+  position: relative;
+  background: #f8f5ef;
+  color: #241b19;
+  font-family: "Cormorant Garamond", serif;
+  background-image: url(assets/texture-paper.jpg);
+  background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ========================================
+   COMMON FADE-IN ANIMATION
+======================================== */
+
+.fade-in-section {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.fade-in-section.visible {
+  opacity: 1;
+}
+
+/* ========================================
+   FIRST SCREEN / INTRO
+======================================== */
+
+.intro-section {
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  min-height: 600px;
+
+  overflow: hidden;
+}
+
+
+/* ========================================
+   INVITATION SCREEN / PAPER BACKGROUND
+
+   The invitation stays inside the first
+   viewport section and behind the cover.
+======================================== */
+
+.invitation-screen {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  z-index: 10;
+
+  background-image: url("assets/texture-paper.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+}
+
+
+/* ========================================
+   OPENING COVER SCREEN
+======================================== */
+
+.cover-screen {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  z-index: 20;
+
+  background: transparent;
+
+  perspective: 1400px;
+  perspective-origin: center center;
+
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    opacity 1.2s ease,
+    visibility 1.2s ease;
+}
+
+
+/* ========================================
+   MAIN INVITATION IMAGE
+======================================== */
+
+.cover-trigger {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  opacity: 1;
+  transform: scale(1);
+
+  cursor: pointer;
+
+  z-index: 6;
+
+  transition:
+    opacity 1.5s ease,
+    transform 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.main-invitation-image {
+  width: 100%;
+  height: 100%;
+
+    object-fit: cover;
+    object-position: top;
+
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+
+/* ========================================
+   TAP TO OPEN PILL
+======================================== */
+
+.tap-to-open {
+  position: absolute;
+  bottom: 9%;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  padding: 11px 27px;
+
+  border: 1px solid #c5a16a;
+  border-radius: 50px;
+
+  background: rgba(248, 245, 239, 0.94);
+
+  color: #762b32;
+
+  font-family: "Cinzel", serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 3px 12px rgba(50, 25, 15, 0.12),
+    inset 0 0 0 2px rgba(181, 138, 72, 0.10);
+
+  z-index: 7;
+
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.cover-screen.opening .tap-to-open {
+  opacity: 0;
+  transform: translate(-50%, 10px);
+  pointer-events: none;
+}
+
+
+/* ========================================
+   LEFT & RIGHT DOORS
+======================================== */
+
+.door {
+  position: absolute;
+  top: 0;
+
+  width: 50%;
+  height: 100%;
+
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+
+  z-index: 5;
+
+  opacity: 1;
+
+  transition:
+    transform 1.65s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 1.5s ease;
+}
+
+.door-left {
+  left: 0;
+
+  background-image: url("assets/left.png");
+  background-position: right center;
+
+  transform-origin: left center;
+}
+
+.door-right {
+  right: 0;
+
+  background-image: url("assets/right.png");
+  background-position: left center;
+
+  transform-origin: right center;
+}
+
+
+/* ========================================
+   DOORS OPEN IN OPPOSITE DIRECTIONS
+======================================== */
+
+.cover-screen.opening .door-left {
+  transform: perspective(1200px) rotateY(-115deg);
+}
+
+.cover-screen.opening .door-right {
+  transform: perspective(1200px) rotateY(115deg);
+}
+
+
+/* ========================================
+   DOORS + MAIN IMAGE ZOOM AND FADE OUT
+======================================== */
+
+.cover-screen.exit-animation .door-left {
+  opacity: 0;
+
+  transform:
+    perspective(1200px)
+    rotateY(-115deg)
+    scale(1.3);
+
+  pointer-events: none;
+}
+
+.cover-screen.exit-animation .door-right {
+  opacity: 0;
+
+  transform:
+    perspective(1200px)
+    rotateY(115deg)
+    scale(1.3);
+
+  pointer-events: none;
+}
+
+.cover-screen.exit-animation .cover-trigger {
+  opacity: 0;
+  transform: scale(1.65);
+
+  pointer-events: none;
+}
+
+
+/* ========================================
+   COVER DISAPPEARS COMPLETELY
+======================================== */
+
+.cover-screen.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+/* ========================================
+   TOP LOTUS GARLAND
+======================================== */
+
+.lotus-garland {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: auto;
+  max-width: none;
+
+  opacity: 0;
+  transform: translateY(-35px);
+
+  z-index: 2;
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.invitation-screen.decorations-visible .lotus-garland {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ========================================
+   BOTTOM LOTUS DECORATION
+======================================== */
+
+.lotus-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: auto;
+  max-width: none;
+
+  opacity: 0;
+  transform: translateY(35px);
+
+  z-index: 2;
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.invitation-screen.decorations-visible .lotus-bottom {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ========================================
+   GANESHA + MANTRA GROUP
+======================================== */
+
+.ganesha-group {
+  position: absolute;
+  top: 35%;
+
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+
+  transform: scale(0.35);
+  transform-origin: center center;
+
+  z-index: 3;
+
+  transition:
+    opacity 1.5s ease,
+    transform 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+    top 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* ========================================
+   GANESHA ZOOM-IN WHILE DOORS OPEN
+======================================== */
+
+.invitation-screen.ganesha-preopen .ganesha-group {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+/* ========================================
+   GANESHA IMAGE
+======================================== */
+
+.ganesha-image {
+  width: min(42vw, 190px);
+  max-height: 25vh;
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+/* ========================================
+   MARATHI MANTRA
+======================================== */
+
+.ganesha-mantra {
+  margin-top: 12px;
+
+  text-align: center;
+
+  font-family: "Noto Serif Devanagari", serif;
+  font-size: clamp(17px, 4.5vw, 23px);
+  font-weight: 500;
+  line-height: 1.5;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   GANESHA + MANTRA MOVE UP
+======================================== */
+
+.invitation-screen.ganesha-settled .ganesha-group {
+  top: 3%;
+  transform: scale(0.68);
+}
+
+
+/* ========================================
+   FINAL INVITATION HEADING
+======================================== */
+
+.invitation-heading {
+  position: absolute;
+  top: 30%;
+
+  width: 100%;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  line-height: 1.15;
+
+  color: #c24371;
+
+  opacity: 0;
+
+  z-index: 4;
+
+  transition:
+    opacity 1.4s ease,
+    transform 1.4s ease;
+}
+
+
+/* ========================================
+   HEADING TEXT
+======================================== */
+
+.heading-small {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(23px, 5vw, 32px);
+  font-weight: 500;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  color: #762b32;
+}
+
+.heading-family {
+  display: block;
+  margin-top: 16px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(17px, 4vw, 25px);
+  font-weight: 500;
+
+  color: #222;
+}
+
+.m-0{
+  margin-top: 0!important;
+}
+.m-15{
+  margin-top: 15px!important;
+}
+.m-10{
+  margin-top: 10px!important;
+}
+.heading-main {
+  display: block;
+  margin-top: 20px;
+
+  font-family: "Sophillia", serif;
+  font-size: clamp(25px, 6vw, 43px);
+
+  letter-spacing: 2px;
+  line-height: 1.4;
+
+  color: #922c51;
+  text-align: center;
+}
+
+/* .heading-main::after {
+  content: "";
+
+  display: block;
+
+  width: 65px;
+  height: 1px;
+
+  margin: 15px auto 0;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    #b58a48,
+    transparent
+  );
+} */
+
+
+/* ========================================
+   HEADING APPEARS
+======================================== */
+
+.invitation-screen.heading-visible .invitation-heading {
+  opacity: 1;
+}
+
+
+
+/* ========================================
+   NATURAL FALLING ROSE PETALS
+======================================== */
+
+#petal-container,
+.petal-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease;
+}
+
+#petal-container.petals-visible,
+.petal-container.petals-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+/* ========================================
+   TWO-TONE ROSE PETALS
+======================================== */
+
+.rose-petal {
+  position: absolute;
+  top: -30px;
+
+  width: 9px;
+  height: 13px;
+
+  background: linear-gradient(
+    135deg,
+    #ffd6e2 0%,
+    #f49ab5 55%,
+    #d94b78 100%
+  );
+
+  border-radius: 80% 10% 80% 10%;
+
+  opacity: 0;
+
+  animation: roseFall linear infinite;
+
+  filter: drop-shadow(
+    0 1px 2px rgba(150, 40, 75, 0.15)
+  );
+
+  will-change: transform, opacity;
+}
+
+
+/* Dark pink alternate petals */
+
+.rose-petal:nth-child(even) {
+  background: linear-gradient(
+    135deg,
+    #f58aab 0%,
+    #df4778 55%,
+    #b92358 100%
+  );
+}
+
+
+/* ========================================
+   FALL FROM TOP TO BOTTOM
+======================================== */
+
+@keyframes roseFall {
+
+  0% {
+    transform: translate3d(0, -5vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 0.8;
+  }
+
+  25% {
+    transform: translate3d(25px, 25vh, 0) rotate(100deg);
+  }
+
+  50% {
+    transform: translate3d(-20px, 50vh, 0) rotate(200deg);
+    opacity: 0.75;
+  }
+
+  75% {
+    transform: translate3d(30px, 75vh, 0) rotate(290deg);
+  }
+
+  92% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translate3d(-15px, 110vh, 0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+
+/* ========================================
+   WEDDING DETAILS SECTION
+   NORMAL PAGE FLOW - NOT FIXED
+======================================== */
+
+.wedding-details {
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+
+
+  overflow: hidden;
+
+  background-image: url("assets/wedding.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  z-index: 1;
+}
+
+
+/* ========================================
+   WEDDING DETAILS CONTENT
+======================================== */
+
+.wedding-details-content {
+  position: relative;
+
+  width: 60%;
+  max-width: 900px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   INTRO
+======================================== */
+
+.details-intro {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(16px, 3.5vw, 29px);
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: -30px;
+}
+
+
+/* ========================================
+   BRIDE AND GROOM
+======================================== */
+.bride-details{
+  margin-top: 30px;
+}
+.groom-details h2{
+  margin-top: -5px;
+}
+.bride-details h2,
+.groom-details h2 {
+  font-family: "Sophillia", serif;
+  font-size: clamp(30px, 8vw, 55px);
+  font-weight: 400;
+
+  color: #922c51;
+  margin-bottom: 8px;
+}
+
+.bride-details p,
+.groom-details p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(17px, 3.5vw, 22px);
+  line-height: 1.5;
+  color: #3b2927;
+}
+
+.bride-details strong,
+.groom-details strong {
+  font-weight: 600;
+}
+
+
+/* ========================================
+   COUPLE DIVIDER
+======================================== */
+
+.couple-divider {
+  font-family: "Sophillia", serif;
+  font-size: 25px;
+  color: #b58a48;
+
+  margin: 5px 0;
+}
+
+
+/* ========================================
+   INVITATION MESSAGE
+======================================== */
+
+.invitation-message {
+  max-width: 520px;
+  margin-top: 30px;
+}
+
+.invitation-message p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(16px, 3.8vw, 25px);
+  line-height: 1.5;
+  font-weight: 500;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   MOBILE RESPONSIVE
+======================================== */
+
+@media (max-width: 480px) {
+
+  .intro-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .tap-to-open {
+    bottom: 8%;
+
+    padding: 10px 24px;
+
+    font-size: 10px;
+    letter-spacing: 1.8px;
+  }
+
+  .ganesha-image {
+    width: 40vw;
+    max-height: 22vh;
+  }
+
+  .ganesha-mantra {
+    margin-top: 10px;
+    font-size: 19px;
+  }
+
+  .invitation-screen.ganesha-settled .ganesha-group {
+    top: 3%;
+    transform: scale(0.68);
+  }
+
+  .invitation-heading {
+    top: 30%;
+  }
+
+  .heading-small {
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .heading-main {
+    font-size: 40px;
+    letter-spacing: 0;
+  }
+
+  .wedding-details {
+    padding: 20px 22px;
+    background-position: center;
+    
+  }
+
+  .wedding-details-content {
+    width: 100%;
+            margin-top: -33px;
+  }
+
+  .bride-details h2,
+  .groom-details h2 {
+    font-size: 30px;
+  }
+
+  .couple-divider {
+    margin: 5px 0;
+  }
+
+  .invitation-message {
+    margin-top: 23px;
+  }
+
+}
+
+
+/* ========================================
+   TABLET & DESKTOP
+======================================== */
+
+@media (min-width: 768px) {
+
+  .ganesha-image {
+    width: 190px;
+    max-height: 240px;
+  }
+
+  .invitation-heading {
+    font-size: 42px;
+  }
+
+  .heading-small {
+    font-size: 29px;
+  }
+
+  .heading-main {
+    font-size: 68px;
+  }
+
+}
+
+
+/* ========================================
+   REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+}
+
+
+/* ========================================
+   MOBILE PETAL SIZE
+======================================== */
+
+@media (max-width: 767px) {
+
+  .rose-petal {
+    width: 7px;
+    height: 10px;
+  }
+
+}
+
+
+/* ========================================
+   SAVE THE DATE SECTION
+======================================== */
+
+.save-date-section {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  overflow: hidden;
+
+  background-image: url("assets/venue.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 22px;
+
+  text-align: center;
+  color: #762b32;
+}
+
+/* ========================================
+   SAVE THE DATE CONTENT
+======================================== */
+
+.save-date-content {
+  position: relative;
+
+  width: 100%;
+  max-width: 650px;
+    padding-top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Main Heading */
+
+.save-date-heading {
+  font-family: "Sophillia", serif;
+  font-size: clamp(20px, 5vw, 30px);
+  font-weight: 600;
+
+  letter-spacing: 4px;
+  color: #762b32;
+}
+
+/* Subtitle */
+
+.save-date-subheading {
+  margin-top: 16px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(18px, 5vw, 34px);
+  font-weight: 500;
+
+  color: #3b2927;
+}
+
+/* Decorative Divider */
+
+.save-date-divider {
+  margin: 18px 0;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30px;
+
+  color: #b58a48;
+}
+
+/* Wedding Date */
+
+.wedding-date {
+  font-family: "Sophillia", serif;
+  font-size: clamp(25px, 7vw, 42px);
+margin-top: 10px;
+
+  letter-spacing: 2px;
+  color: #922c51;
+}
+
+.wedding-time {
+  margin-top: 12px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(23px, 4vw, 25px);
+  font-weight: 500;
+
+  color: #3b2927;
+}
+
+/* ========================================
+   VENUE DETAILS
+======================================== */
+.venue-heading::after {
+  content: "";
+
+  display: block;
+
+  width: 65px;
+  height: 1px;
+
+  margin: 5px auto 0;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    #b58a48,
+    transparent
+  );
+}
+.venue-details {
+  margin-top: 38px;
+}
+
+.venue-heading {
+  font-family: "Cinzel", serif;
+  font-size: 17px;
+  font-weight: 600;
+
+  letter-spacing: 4px;
+  color: #762b32;
+}
+
+.venue-name {
+  margin-top: 13px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(23px, 5vw, 32px);
+  font-weight: 600;
+
+  color: #922c51;
+}
+
+.venue-address {
+  margin-top: 8px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(17px, 3.8vw, 22px);
+  line-height: 1.5;
+
+  color: #3b2927;
+}
+
+/* ========================================
+   CLOSING MESSAGE
+======================================== */
+
+.save-date-closing {
+  margin-top: 38px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(18px, 4vw, 25px);
+  font-weight: 500;
+  font-style: italic;
+
+  line-height: 1.5;
+  color: #762b32;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE
+======================================== */
+
+@media (max-width: 480px) {
+
+  .save-date-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    padding: 35px 22px;
+
+    background-position: center;
+  }
+
+  .save-date-heading {
+    letter-spacing: 3px;
+  }
+
+  .save-date-subheading {
+    margin-top: 12px;
+  }
+
+  .save-date-divider {
+    margin: 14px 0;
+  }
+
+  .venue-details {
+    margin-top: 30px;
+  }
+
+  .save-date-closing {
+    margin-top: 30px;
+  }
+
+}
+
+/* ========================================
+   WEDDING FESTIVITIES SECTION
+======================================== */
+
+.festivities-section {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  overflow: hidden;
+
+  background-image: url("assets/cards-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 20px;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  color: #762b32;
+}
+
+.swipe{
+    width: 45px;
+    margin-top: -11px;
+}
+/* ========================================
+   CONTENT
+======================================== */
+
+.festivities-content {
+  position: relative;
+
+  width: 100%;
+  max-width: 1100px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   HEADING
+======================================== */
+
+.festivities-heading {
+  font-family: "Sophillia", serif;
+margin-top: 50px;
+  font-size: clamp(30px, 7vw, 58px);
+
+  letter-spacing: 1px;
+  line-height: 1.2;
+
+  color: #922c51;
+}
+
+
+/* ========================================
+   SUBTITLES
+======================================== */
+
+.festivities-subtitle,
+.festivities-bottom-subtitle {
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(17px, 4vw, 24px);
+  font-weight: 500;
+display: flex;
+  letter-spacing: 1px;
+
+  color: #762b32;
+}
+
+
+.festivities-subtitle {
+  margin-top: 12px;
+}
+
+
+.festivities-bottom-subtitle {
+  margin-top: 28px;
+}
+
+
+/* ========================================
+   CAROUSEL CONTAINER
+======================================== */
+
+.festivities-carousel {
+
+  position: relative;
+
+  width: 100%;
+  max-width: 1000px;
+
+  height: clamp(350px, 65vh, 650px);
+
+  margin: 20px auto 0;
+
+  overflow: hidden;
+
+  touch-action: pan-y pinch-zoom;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  cursor: grab;
+}
+
+
+.festivities-carousel.dragging {
+  cursor: grabbing;
+}
+
+
+/* ========================================
+   TRACK
+======================================== */
+
+.festivities-track {
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ========================================
+   CAROUSEL CARDS
+======================================== */
+
+.festivity-card {
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: clamp(190px, 34vw, 390px);
+  height: 90%;
+
+  transform: translate(-50%, -50%) scale(0.65);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
+  /* No shadows */
+
+  box-shadow: none;
+
+  z-index: 1;
+
+  transition:
+
+    transform 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+
+    filter 1s ease;
+
+  will-change: transform, opacity;
+
+  filter: blur(2px);
+}
+
+
+/* ========================================
+   CARD IMAGES
+======================================== */
+
+.festivity-card img {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  border-radius: 18px;
+
+  pointer-events: none;
+
+  -webkit-user-drag: none;
+}
+
+
+/* ========================================
+   CENTER CARD
+======================================== */
+
+.festivity-card.center {
+
+  opacity: 1;
+
+  transform: translate(-50%, -50%) scale(1);
+
+  z-index: 5;
+
+  pointer-events: auto;
+
+  filter: blur(0);
+}
+
+
+/* ========================================
+   LEFT CARD
+======================================== */
+
+.festivity-card.left {
+
+  opacity: 0.78;
+
+  transform:
+
+    translate(calc(-50% - 36%), -50%)
+
+    scale(0.78);
+
+  z-index: 3;
+
+  filter: blur(0);
+}
+
+
+/* ========================================
+   RIGHT CARD
+======================================== */
+
+.festivity-card.right {
+
+  opacity: 0.78;
+
+  transform:
+
+    translate(calc(-50% + 36%), -50%)
+
+    scale(0.78);
+
+  z-index: 3;
+
+  filter: blur(0);
+}
+
+
+/* ========================================
+   HIDDEN CARDS
+======================================== */
+
+.festivity-card.hidden {
+
+  opacity: 0;
+
+  transform:
+
+    translate(-50%, -50%)
+
+    scale(0.55);
+
+  z-index: 1;
+
+  filter: blur(3px);
+}
+
+
+/* ========================================
+   NAVIGATION DOTS
+======================================== */
+
+.festivities-dots {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+
+/* ========================================
+   DOT
+======================================== */
+
+.festivity-dot {
+
+  width: 8px;
+  height: 8px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(146, 44, 81, 0.28);
+
+  cursor: pointer;
+
+  transition:
+
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+
+    background 0.45s ease,
+
+    transform 0.45s ease;
+}
+
+
+/* ========================================
+   ACTIVE DOT
+======================================== */
+
+.festivity-dot.active {
+
+  width: 25px;
+  height: 8px;
+
+  border-radius: 20px;
+
+  background: #922c51;
+
+  transform: scale(1);
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 480px) {
+
+  .festivities-section {
+
+    padding: 30px 5px;
+  }
+
+
+  .festivities-heading {
+
+    font-size: 30px;
+  }
+
+
+  .festivities-subtitle,
+  .festivities-bottom-subtitle {
+
+    font-size: 19px;
+  }
+
+
+  .festivities-carousel {
+
+    height: 52vh;
+    height: 52dvh;
+
+    min-height: 330px;
+    max-height: 460px;
+
+    margin-top: 15px;
+  }
+
+
+  .festivity-card {
+
+    width: 72vw;
+    max-width: 310px;
+
+    height: 95%;
+  }
+
+
+  .festivity-card.left {
+
+    transform:
+
+      translate(calc(-50% - 27%), -50%)
+
+      scale(0.72);
+  }
+
+
+  .festivity-card.right {
+
+    transform:
+
+      translate(calc(-50% + 27%), -50%)
+
+      scale(0.72);
+  }
+
+
+  .festivities-dots {
+
+    gap: 8px;
+
+    margin-top: 15px;
+  }
+
+
+  .festivity-dot {
+
+    width: 7px;
+    height: 7px;
+  }
+
+
+  .festivity-dot.active {
+
+    width: 22px;
+    height: 7px;
+  }
+
+
+  .festivities-bottom-subtitle {
+
+    margin-top: 22px;
+  }
+
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (min-width: 481px) and (max-width: 768px) {
+
+  .festivities-section {
+
+    padding: 35px 10px;
+  }
+
+
+  .festivities-carousel {
+
+    height: 55vh;
+    height: 55dvh;
+
+    min-height: 340px;
+    max-height: 500px;
+  }
+
+
+  .festivity-card {
+
+    width: clamp(180px, 48vw, 330px);
+
+    height: 90%;
+  }
+
+
+  .festivity-card.left {
+
+    transform:
+
+      translate(calc(-50% - 31%), -50%)
+
+      scale(0.75);
+  }
+
+
+  .festivity-card.right {
+
+    transform:
+
+      translate(calc(-50% + 31%), -50%)
+
+      scale(0.75);
+  }
+
+}
+
+
+/* ========================================
+   REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .festivity-card,
+  .festivity-dot {
+
+    transition-duration: 0.01ms !important;
+  }
+
+}
+
+/* ========================================
+   LOCATION / HOW TO REACH SECTION
+======================================== */
+
+.location-section {
+
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  min-height: 650px;
+
+  overflow: hidden;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  background-image: url("assets/location.png");
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   LOCATION CONTENT
+======================================== */
+
+.location-content {
+
+  position: relative;
+
+  width: 100%;
+  max-width: 600px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+margin-top: -35px;
+  text-align: center;
+}
+
+
+/* ========================================
+   SMALL LOCATION TEXT
+======================================== */
+
+.location-label {
+
+  font-family: "Cinzel", serif;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 5px;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   MAIN HEADING
+======================================== */
+
+.location-heading {
+
+  margin-top: 12px;
+
+  font-family: "Sophillia", serif;
+
+  font-size: clamp(38px, 9vw, 58px);
+
+
+  line-height: 1.1;
+
+  color: #922c51;
+}
+
+
+/* ========================================
+   MAP IMAGE
+======================================== */
+
+.location-map {
+
+  position: relative;
+
+  width:75%;
+
+
+  margin-top: 20px;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  background: transparent;
+
+  box-shadow:
+
+    0 12px 30px rgba(80, 40, 45, 0.16),
+
+    0 3px 10px rgba(80, 40, 45, 0.08);
+}
+
+
+/* MAP LINK */
+
+.map-image-link {
+
+  display: block;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+}
+
+
+/* MAP IMAGE */
+
+.location-map-image {
+
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  object-fit: cover;
+
+  border-radius: 10px;
+
+  transition: transform 0.6s ease;
+}
+
+
+/* MAP HOVER */
+
+@media (hover: hover) {
+
+  .location-map-image:hover {
+
+    transform: scale(1.03);
+
+  }
+
+}
+
+
+/* ========================================
+   VENUE DETAILS
+======================================== */
+
+.location-details {
+
+  margin-top: 24px;
+
+  text-align: center;
+}
+
+
+/* VENUE NAME */
+
+.location-venue-name {
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(28px, 6vw, 37px);
+  font-weight: 600;
+
+  line-height: 1.2;
+
+  color: #922c51;
+}
+
+
+/* ADDRESS */
+
+.location-address {
+
+  margin-top: 10px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(17px, 4vw, 22px);
+
+  line-height: 1.6;
+
+  color: #3b2927;
+}
+
+
+/* ========================================
+   LOCATION BUTTONS
+======================================== */
+
+.location-buttons {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  width: 85%;
+
+  margin-top: 26px;
+}
+
+
+/* COMMON BUTTON STYLE */
+
+.location-button {
+
+  min-height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 14px 22px;
+
+  border-radius: 50px;
+
+  font-family: "Cinzel", serif;
+
+  font-size: 11px;
+
+font-weight: bold;
+
+
+  letter-spacing: 2px;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+
+    background 0.4s ease,
+
+    color 0.4s ease,
+
+    transform 0.4s ease;
+}
+
+
+/* ========================================
+   GET DIRECTIONS BUTTON
+======================================== */
+
+.directions-button {
+
+  background: #922c51;
+
+  color: #f8f5ef;
+
+  border: 1px solid #922c51;
+}
+
+
+/* ARROW IMAGE */
+
+.directions-icon {
+
+  width: 17px;
+  height: 17px;
+
+  object-fit: contain;
+
+  flex-shrink: 0;
+}
+
+
+/* ========================================
+   COPY ADDRESS BUTTON
+======================================== */
+
+.copy-button {
+
+  background: transparent;
+
+  color: #762b32;
+
+  border: 1px solid rgba(118, 43, 50, 0.65);
+}
+
+
+/* ========================================
+   HOVER EFFECTS
+======================================== */
+
+@media (hover: hover) {
+
+  .directions-button:hover {
+
+    background: #762b32;
+
+    transform: translateY(-2px);
+  }
+
+
+  .copy-button:hover {
+
+    background: rgba(146, 44, 81, 0.08);
+
+    transform: translateY(-2px);
+  }
+
+}
+
+
+/* ========================================
+   MOBILE RESPONSIVE
+======================================== */
+
+@media (max-width: 480px) {
+
+  .location-section {
+
+    height: 100vh;
+    height: 100dvh;
+
+    min-height: 650px;
+
+    padding: 25px 22px;
+
+    background-position: bottom;
+  }
+
+
+  /* CONTENT */
+
+  .location-content {
+
+    width: 100%;
+  }
+
+
+  /* LABEL */
+
+  .location-label {
+
+    font-size: 11px;
+
+    letter-spacing: 4px;
+  }
+
+
+  /* HEADING */
+
+  .location-heading {
+
+    margin-top: 10px;
+
+    font-size: 35px;
+  }
+
+
+  /* MAP */
+
+  .location-map {
+
+    width: 75%;
+
+    margin-top:20px;
+
+    border-radius: 10px;
+
+    box-shadow:
+
+      0 10px 25px rgba(80, 40, 45, 0.15),
+
+      0 2px 8px rgba(80, 40, 45, 0.08);
+  }
+
+
+  .map-image-link,
+  .location-map-image {
+
+    border-radius: 10px;
+  }
+
+
+  /* VENUE */
+
+  .location-details {
+
+    margin-top: 22px;
+  }
+
+
+  .location-venue-name {
+
+    font-size: 30px;
+  }
+
+
+  /* ADDRESS */
+
+  .location-address {
+
+    font-size: 19px;
+
+    line-height: 1.5;
+  }
+
+
+  /* BUTTONS */
+
+  .location-buttons {
+
+    gap: 9px;
+
+    margin-top: 23px;
+  }
+
+
+  .location-button {
+
+    flex: 1;
+
+    min-height: 50px;
+
+    padding: 12px 10px;
+
+    font-size: 10px;
+font-weight: bold;
+    letter-spacing: 1.4px;
+
+    gap: 6px;
+  }
+
+
+  /* ARROW */
+
+  .directions-icon {
+
+    width: 15px;
+    height: 15px;
+  }
+
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (min-width: 481px) and (max-width: 767px) {
+
+  .location-section {
+
+    padding: 30px 35px;
+  }
+
+
+  .location-map {
+
+    max-width: 400px;
+  }
+
+
+  .location-buttons {
+
+    max-width: 450px;
+  }
+
+}
+
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+@media (min-width: 768px) {
+
+  .location-content {
+
+    max-width: 650px;
+  }
+
+
+  .location-map {
+
+    max-width: 450px;
+  }
+
+}
+
+
+/* ========================================
+   REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .location-map-image,
+  .location-button {
+
+    transition-duration: 0.01ms !important;
+
+  }
+
+}
+
+/* ========================================
+   FINAL FAMILY REGARDS SECTION
+======================================== */
+
+.regards-section {
+
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  min-height: 680px;
+
+  overflow: hidden;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  background-image: url("assets/regards.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  padding: 35px 5%;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   TOP LEFT GARLAND
+======================================== */
+
+.regards-garland {
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: clamp(100px, 20vw, 190px);
+
+  height: auto;
+
+  max-width: none;
+
+  object-fit: contain;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* ========================================
+   MAIN CONTENT - LEFT SIDE
+======================================== */
+
+.regards-content {
+
+  position: relative;
+
+  width: 65%;
+  max-width: 700px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  text-align: left;
+
+  z-index: 3;
+}
+
+
+/* ========================================
+   SMALL INTRO
+======================================== */
+
+.regards-label {
+
+  font-family: "Cinzel", serif;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 4px;
+
+  color: #762b32;
+}
+
+
+/* ========================================
+   MAIN HEADING
+======================================== */
+
+.regards-heading {
+
+  margin-top: 14px;
+
+  font-family: "Sophillia", serif;
+
+  font-size: clamp(28px, 5vw, 48px);
+
+  font-weight: 400;
+
+  line-height: 1.3;
+
+  color: #922c51;
+}
+
+
+/* ========================================
+   WELCOME MESSAGE
+======================================== */
+
+.regards-message {
+
+  width: 100%;
+  max-width: 500px;
+
+  margin-top: 16px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(17px, 2.5vw, 23px);
+
+  font-weight: 500;
+
+  line-height: 1.6;
+
+  color: #3b2927;
+}
+
+
+/* ========================================
+   CONTACT HEADING
+======================================== */
+
+.regards-contact-heading {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 14px;
+
+  width: 100%;
+
+  margin-top: 28px;
+}
+
+
+.regards-contact-heading p {
+
+  font-family: "Cinzel", serif;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: 3px;
+
+  color: #762b32;
+
+  white-space: nowrap;
+}
+
+
+/* DECORATIVE LINES */
+
+.regards-divider {
+
+  width: 35px;
+  height: 1px;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    #b58a48
+  );
+}
+
+
+.regards-divider:last-child {
+
+  background: linear-gradient(
+    to left,
+    transparent,
+    #b58a48
+  );
+}
+
+
+/* ========================================
+   CONTACT GRID
+======================================== */
+
+.regards-contacts {
+
+  width: 100%;
+  max-width: 500px;
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  column-gap: 25px;
+  row-gap: 18px;
+
+  margin-top: 25px;
+}
+
+
+/* ========================================
+   CONTACT ITEM
+======================================== */
+
+.regards-contact {
+
+  display: flex;
+
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  text-align: left;
+}
+
+
+/* NAME */
+
+.contact-name {
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  color: #922c51;
+}
+
+
+/* PHONE NUMBER */
+
+.contact-number {
+
+  display: inline-block;
+
+  margin-top: 5px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 19px;
+
+  font-weight: 500;
+
+  color: #3b2927;
+
+  text-decoration: none;
+
+  transition: color 0.3s ease;
+}
+
+
+@media (hover: hover) {
+
+  .contact-number:hover {
+
+    color: #922c51;
+
+  }
+
+}
+
+
+/* ========================================
+   CLOSING MESSAGE
+======================================== */
+
+.regards-closing {
+
+  width: 100%;
+
+  margin-top: 28px;
+}
+
+
+/* FINAL THANK YOU */
+
+.regards-thankyou {
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(17px, 2.5vw, 23px);
+
+  font-weight: 500;
+
+  font-style: italic;
+
+  line-height: 1.5;
+
+  color: #762b32;
+}
+
+
+/* FAMILY SIGN-OFF */
+
+.regards-family {
+
+  margin-top: 13px;
+
+  font-family: "Sophillia", serif;
+
+  font-size: clamp(25px, 6vw, 55px);
+
+  font-weight: 400;
+
+  line-height: 1.4;
+
+  color: #922c51;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (min-width: 481px) and (max-width: 768px) {
+
+  .regards-section {
+
+    padding: 30px 4%;
+
+  }
+
+  .regards-content {
+
+    width: 65%;
+
+  }
+
+  .regards-garland {
+
+    width: 140px;
+
+  }
+
+  .regards-contacts {
+
+    column-gap: 15px;
+
+  }
+
+  .contact-name {
+
+    font-size: 14px;
+
+  }
+
+  .contact-number {
+
+    font-size: 17px;
+
+  }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 480px) {
+
+  .regards-section {
+
+    height: 100vh;
+    height: 100dvh;
+
+    min-height: 680px;
+
+    padding: 25px 22px;
+
+    background-position: center;
+  }
+
+
+  /* GARLAND */
+
+  .regards-garland {
+
+    width: 115px;
+
+    top: 0;
+    left: 0;
+  }
+
+
+  /* CONTENT */
+
+  .regards-content {
+
+    width: 68%;
+
+    align-items: flex-start;
+
+    text-align: left;
+
+  }
+
+
+  /* LABEL */
+
+  .regards-label {
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+  }
+
+
+  /* HEADING */
+
+  .regards-heading {
+
+    margin-top: 12px;
+
+    font-size: 28px;
+
+    line-height: 1.35;
+
+  }
+
+
+  /* MESSAGE */
+
+  .regards-message {
+
+    margin-top: 12px;
+
+    font-size: 17px;
+
+    line-height: 1.5;
+
+  }
+
+
+  /* CONTACT TITLE */
+
+  .regards-contact-heading {
+
+    gap: 8px;
+
+    margin-top: 20px;
+
+  }
+
+
+  .regards-contact-heading p {
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+  }
+
+
+  .regards-divider {
+
+    width: 20px;
+
+  }
+
+
+  /* CONTACT GRID */
+
+  .regards-contacts {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    column-gap: 10px;
+
+    row-gap: 14px;
+
+    margin-top: 17px;
+
+  }
+
+
+  /* CONTACT */
+
+  .contact-name {
+
+    font-size: 14px;
+
+  }
+
+
+  .contact-number {
+
+    font-size: 15px;
+
+    margin-top: 3px;
+
+    word-break: break-word;
+
+  }
+
+
+  /* CLOSING */
+
+  .regards-closing {
+
+    margin-top: 20px;
+
+  }
+
+
+  .regards-thankyou {
+
+    font-size: 17px;
+
+    line-height: 1.5;
+
+  }
+
+
+  .regards-family {
+
+    margin-top: 9px;
+
+    font-size: 25px;
+
+  }
+
+}
+
+
+/* ========================================
+   REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .contact-number {
+
+    transition-duration: 0.01ms !important;
+
+  }
+
+}

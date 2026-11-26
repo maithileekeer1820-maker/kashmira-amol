@@ -1,0 +1,511 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Wedding Invitation</title>
+
+  <link rel="preload" as="image" href="assets/left.png">
+<link rel="preload" as="image" href="assets/right.png">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ========================================
+       FIRST SCREEN / INTRO
+  ========================================= -->
+
+  <main class="intro-section">
+
+    <!-- OPENING COVER -->
+
+    <section class="cover-screen" id="cover-screen">
+
+      <button
+        type="button"
+        class="cover-trigger"
+        id="open-invitation"
+        aria-label="Tap to open wedding invitation"
+      >
+
+        <img
+          src="assets/main.png"
+          alt="Wedding Invitation"
+          class="main-invitation-image"
+        >
+
+        <span class="tap-to-open">
+          Tap to Open
+        </span>
+
+      </button>
+
+      <div class="door door-left"></div>
+      <div class="door door-right"></div>
+
+    </section>
+
+
+    <!-- ========================================
+         INVITATION SCREEN
+    ========================================= -->
+
+    <section class="invitation-screen" id="invitation-screen">
+
+      <!-- Top Lotus Garland -->
+
+      <img
+        src="assets/lotus-garland.png"
+        alt=""
+        class="lotus-garland"
+      >
+
+      <!-- Bottom Lotus Decoration -->
+
+      <img
+        src="assets/lotus-down.png"
+        alt=""
+        class="lotus-bottom"
+      >
+
+
+      <!-- Ganesha and Mantra -->
+
+      <div class="ganesha-group">
+
+        <img
+          src="assets/Ganesha.gif"
+          alt="Lord Ganesha"
+          class="ganesha-image"
+        >
+
+        <p class="ganesha-mantra">
+          ॥ श्री गणेशाय नमः ॥
+        </p>
+
+      </div>
+
+
+      <!-- Final Invitation Heading -->
+
+      <div class="invitation-heading">
+
+        <span class="heading-small">
+           A New Beginning, A Beautiful<br> Celebration.
+        </span>
+
+        <span class="heading-family">
+          With the Blessing of Lord Ganesha
+        </span>
+
+        <span class="heading-main">
+         WE INVITE<br> YOU
+        </span>
+
+        <span class="heading-family m-15">
+          to celebrate the joyous occasion of the wedding.
+        </span>
+
+        <span class="heading-small m-10">
+          With Love, Both Families
+        </span>
+
+      </div>
+
+
+   
+
+    </section>
+
+  </main>
+
+
+  <!-- ========================================
+       WEDDING DETAILS SECTION
+       NORMAL DOCUMENT FLOW
+  ========================================= -->
+
+  <section class="wedding-details" id="wedding-details">
+
+  <div class="wedding-details-content">
+
+    <p class="details-intro fade-in-section">
+      Together with Their Families
+    </p>
+
+    <div class="bride-details">
+
+      <h2 class="fade-in-section">Kashmira</h2>
+
+      <p class="fade-in-section">
+        Daughter of<br>
+        <strong>Mr. Shrikrushna Ramakant Chaugule</strong>
+      </p>
+
+    </div>
+
+    <div class="couple-divider fade-in-section">
+      &
+    </div>
+
+    <div class="groom-details">
+
+      <h2 class="fade-in-section">Amol</h2>
+
+      <p class="fade-in-section">
+        Son of<br>
+        <strong>Mr. Narayan Ramchandra Desai</strong>
+      </p>
+
+    </div>
+
+    <div class="invitation-message">
+
+      <p class="fade-in-section">
+        Invite you to join them as they begin<br>
+        their journey of togetherness.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ========================================
+     SAVE THE DATE SECTION
+========================================= -->
+
+<section class="save-date-section" id="save-date">
+
+  <div class="save-date-content">
+
+    <p class="save-date-heading fade-in-section">
+      SAVE THE DATE
+    </p>
+
+    <h2 class="save-date-subheading fade-in-section">
+      A Day to Remember
+    </h2>
+
+   
+
+    <span class="wedding-date fade-in-section">
+      21 April 2027
+    </span>
+
+    <p class="wedding-time fade-in-section">
+      Wednesday | 12:30 PM
+    </p>
+
+    <div class="venue-details">
+
+      <p class="venue-heading fade-in-section">
+        VENUE
+      </p>
+
+      <h3 class="venue-name fade-in-section">
+        [Venue Name]
+      </h3>
+
+      <p class="venue-address fade-in-section">
+        [Venue Address]
+      </p>
+
+    </div>
+
+    <!-- <p class="save-date-closing fade-in-section">
+      We Await Your <br>Presence and Blessings.
+    </p> -->
+
+  </div>
+
+</section>
+
+<!-- ========================================
+     WEDDING FESTIVITIES SECTION
+========================================= -->
+
+<section class="festivities-section" id="festivities">
+
+  <div class="festivities-content">
+
+    <span class="festivities-heading fade-in-section">
+      Wedding Functions
+    </span>
+
+   
+
+    <!-- CAROUSEL -->
+    <div class="festivities-carousel" id="festivities-carousel">
+
+      <div class="festivities-track" id="festivities-track">
+
+        <div class="festivity-card" data-index="0">
+          <img src="assets/engagement.png" alt="Engagement">
+        </div>
+
+        <div class="festivity-card" data-index="1">
+          <img src="assets/sangeet.png" alt="Sangeet">
+        </div>
+
+        <div class="festivity-card" data-index="2">
+          <img src="assets/mehendi.png" alt="Mehendi">
+        </div>
+
+        <div class="festivity-card" data-index="3">
+          <img src="assets/haldi.png" alt="Haldi">
+        </div>
+
+        <div class="festivity-card" data-index="4">
+          <img src="assets/vivah.png" alt="Vivah">
+        </div>
+
+        <div class="festivity-card" data-index="5">
+          <img src="assets/reception.png" alt="Reception">
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- NAVIGATION DOTS -->
+    <div class="festivities-dots" id="festivities-dots">
+
+      <button class="festivity-dot active" data-index="0" aria-label="Engagement"></button>
+      <button class="festivity-dot" data-index="1" aria-label="Sangeet"></button>
+      <button class="festivity-dot" data-index="2" aria-label="Mehendi"></button>
+      <button class="festivity-dot" data-index="3" aria-label="Haldi"></button>
+      <button class="festivity-dot" data-index="4" aria-label="Vivah"></button>
+      <button class="festivity-dot" data-index="5" aria-label="Reception"></button>
+
+    </div>
+    <p class="festivities-bottom-subtitle fade-in-section">
+      
+<img src="assets/swipe.gif" class="swipe"> Swipe the festivities
+    </p>
+
+  </div>
+
+</section>
+
+<!-- ========================================
+     LOCATION / HOW TO REACH
+========================================= -->
+
+<section class="location-section" id="location">
+
+  <div class="location-content">
+
+    <p class="location-label fade-in-section">
+      WEDDING LOCATION
+    </p>
+
+    <span class="location-heading fade-in-section">
+      How to Reach
+    </span>
+
+    <!-- MAP IMAGE -->
+
+<div class="location-map fade-in-section">
+
+  <a
+    href="https://www.google.com/maps/search/?api=1&query=Raj+Vilas+Palace+Amer+Road+Jaipur+302002"
+    target="_blank"
+    rel="noopener"
+    class="map-image-link"
+  >
+
+    <img
+      src="assets/map.png"
+      alt="Map showing the venue location"
+      class="location-map-image"
+    >
+
+  </a>
+
+</div>
+
+    <!-- VENUE DETAILS -->
+
+    <div class="location-details">
+
+      <h3 class="location-venue-name fade-in-section">
+        Raj Vilas Palace
+      </h3>
+
+      <p class="location-address fade-in-section">
+        Amer Road, near Jal Mahal,<br>
+        Jaipur 302002
+      </p>
+
+    </div>
+
+    <!-- BUTTONS -->
+
+    <div class="location-buttons fade-in-section">
+
+      <a
+  href="https://www.google.com/maps/search/?api=1&query=Raj+Vilas+Palace+Amer+Road+Jaipur+302002"
+  target="_blank"
+  rel="noopener"
+  class="location-button directions-button">
+
+  <img src="assets/arrow.png" alt="" class="directions-icon">
+
+  GET DIRECTIONS
+
+</a>
+
+      <button
+        type="button"
+        class="location-button copy-button"
+        id="copy-location">
+
+        COPY ADDRESS
+
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ========================================
+     FAMILY REGARDS SECTION
+========================================= -->
+
+<section class="regards-section" id="regards">
+
+  <!-- TOP LEFT GARLAND -->
+
+  <img
+    src="assets/garland.gif"
+    alt=""
+    class="regards-garland"
+  >
+
+  <div class="regards-content">
+
+    <!-- INTRO -->
+
+    <p class="regards-label fade-in-section">
+      WITH LOVE & REGARDS
+    </p>
+
+    <h2 class="regards-heading fade-in-section">
+      We Await <br>Your Presence
+    </h2>
+
+    <p class="regards-message fade-in-section">
+      We would love to have you with us on our special day.
+    </p>
+
+
+    <!-- CONTACT TITLE -->
+
+    <div class="regards-contact-heading fade-in-section">
+
+      <span class="regards-divider"></span>
+
+      <p>
+        For Any Assistance
+      </p>
+
+      <span class="regards-divider"></span>
+
+    </div>
+
+
+    <!-- CONTACT NUMBERS -->
+
+    <div class="regards-contacts">
+
+      <div class="regards-contact fade-in-section">
+
+        <p class="contact-name">
+          Chinmay Chaugule
+        </p>
+
+        <a href="tel:+919876543210" class="contact-number">
+          +91 98765 43210
+        </a>
+
+      </div>
+
+
+      <div class="regards-contact fade-in-section">
+
+        <p class="contact-name">
+          Akshay Pawar
+        </p>
+
+        <a href="tel:+919876543210" class="contact-number">
+          +91 98765 43210
+        </a>
+
+      </div>
+
+
+      <div class="regards-contact fade-in-section">
+
+        <p class="contact-name">
+          Parth Chaugule
+        </p>
+
+        <a href="tel:+919876543210" class="contact-number">
+          +91 98765 43210
+        </a>
+
+      </div>
+
+
+      <div class="regards-contact fade-in-section">
+
+        <p class="contact-name">
+          Sarthak Sawant
+        </p>
+
+        <a href="tel:+919876543210" class="contact-number">
+          +91 98765 43210
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- CLOSING -->
+
+    <div class="regards-closing fade-in-section">
+
+      <p class="regards-thankyou">
+        Your presence, blessings and love
+        are all we wish for.
+      </p>
+
+      <h2 class="regards-family">
+        Chaugule Family
+      </h2>
+
+    </div>
+
+  </div>
+
+</section>
+
+   <!-- Floating Rose Petals -->
+
+      <div class="petal-container" id="petal-container"></div>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
