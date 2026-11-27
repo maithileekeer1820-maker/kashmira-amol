@@ -84,6 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const SCROLL_THRESHOLD = 25;
   const TOUCH_THRESHOLD = 45;
   const SCROLL_UNLOCK_DELAY = 300;
+  const mobileViewport = window.matchMedia("(max-width: 767px), (hover: none) and (pointer: coarse)");
+  let mobileController = null;
 
 
   /* ========================================
@@ -105,6 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================== */
 
   function getCurrentSection() {
+
+    if (mobileViewport.matches && mobileController) return currentSection;
 
     const scrollPosition = window.scrollY;
 
@@ -143,19 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     isScrolling = false;
 
-    if (mobileViewport.matches && targetSection !== null) {
-      currentSection = targetSection;
-
-      const targetTop = getSectionTop(sections[currentSection]);
-      if (Math.abs(window.scrollY - targetTop) > 1) {
-        const previousBehavior = document.documentElement.style.scrollBehavior;
-        document.documentElement.style.scrollBehavior = "auto";
-        window.scrollTo(0, targetTop);
-        document.documentElement.style.scrollBehavior = previousBehavior;
-      }
-    } else {
-      currentSection = getCurrentSection();
-    }
+    currentSection = getCurrentSection();
 
     targetSection = null;
 
@@ -176,6 +168,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function goToSection(index) {
 
     if (index < 0 || index >= sections.length) return false;
+
+    if (mobileViewport.matches) {
+      return mobileController ? mobileController.navigateTo(index) : false;
+    }
+
     if (isScrolling) return false;
 
     isScrolling = true;
@@ -210,17 +207,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("scroll", () => {
 
+    if (mobileViewport.matches) return;
     if (!scrollingUnlocked || !isScrolling) return;
 
     clearTimeout(scrollEndTimer);
-
-    const scrollSettleDelay = mobileViewport.matches ? 650 : 180;
 
     scrollEndTimer = setTimeout(() => {
 
       finishSectionScroll();
 
-    }, scrollSettleDelay);
+    }, 180);
 
   }, { passive: true });
 
@@ -229,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("scrollend", () => {
 
+      if (mobileViewport.matches) return;
       finishSectionScroll();
 
     });
@@ -278,119 +275,218 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ========================================
-     MOBILE TOUCH SWIPE
-     ONE SWIPE = ONE SECTION
+     MOBILE SECTION CONTROLLER
+     One completed gesture animates one adjacent section.
   ======================================== */
 
-  let touchStartY = 0;
-  let touchStartX = 0;
+  function setupMobileSectionController() {
+    if (!mobileViewport.matches) return;
 
-  let touchStartTarget = null;
-  let validTouch = false;
-  let touchAxis = null;
+    const html = document.documentElement;
+    const body = document.body;
 
-  const mobileViewport = window.matchMedia("(max-width: 767px)");
+    html.classList.add("mobile-section-navigation");
+    body.classList.add("mobile-section-navigation");
+
+    sections.forEach((section, index) => {
+      section.classList.add("mobile-controlled-section");
+      section.style.setProperty("--mobile-section-y", `${(index - currentSection) * 100}dvh`);
+      section.style.zIndex = index === currentSection ? "2" : "1";
+      section.classList.toggle("mobile-section-active", index === currentSection);
+    });
+
+    if (mobileController) return;
+
+    let transitioning = false;
+    let touchStart = null;
+    let gestureAxis = null;
+    let touchIdentifier = null;
+    let activeTransitionCleanup = null;
+
+    const finishTransition = (destination) => {
+      if (!transitioning || destination !== currentSection) return;
+
+      transitioning = false;
+      isScrolling = false;
+      sections.forEach((section, index) => {
+        section.classList.toggle("mobile-section-active", index === currentSection);
+        section.classList.remove("mobile-section-entering");
+        section.style.zIndex = index === currentSection ? "2" : "1";
+      });
+
+      touchLocked = false;
+    };
+
+    const navigateTo = (destination) => {
+      if (!scrollingUnlocked || transitioning) return false;
+      if (destination < 0 || destination >= sections.length) return false;
+      if (Math.abs(destination - currentSection) !== 1) return false;
+
+      const previous = currentSection;
+      const incoming = sections[destination];
+      const outgoing = sections[previous];
+
+      transitioning = true;
+      isScrolling = true;
+      touchLocked = true;
+      targetSection = destination;
+      currentSection = destination;
+
+      incoming.style.zIndex = "3";
+      outgoing.style.zIndex = "2";
+      incoming.classList.add("mobile-section-entering");
+      incoming.classList.remove("mobile-section-active");
+
+      const onTransitionEnd = (event) => {
+        if (event.target !== incoming || event.propertyName !== "transform") return;
+        activeTransitionCleanup?.();
+        targetSection = null;
+        finishTransition(destination);
+      };
+
+      const onTransitionCancel = (event) => {
+        if (event.target !== incoming || event.propertyName !== "transform") return;
+        sections.forEach((section, index) => {
+          section.style.setProperty("--mobile-section-y", `${(index - destination) * 100}dvh`);
+        });
+        activeTransitionCleanup?.();
+        targetSection = null;
+        finishTransition(destination);
+      };
+
+      activeTransitionCleanup = () => {
+        incoming.removeEventListener("transitionend", onTransitionEnd);
+        incoming.removeEventListener("transitioncancel", onTransitionCancel);
+        activeTransitionCleanup = null;
+      };
+
+      incoming.addEventListener("transitionend", onTransitionEnd);
+      incoming.addEventListener("transitioncancel", onTransitionCancel);
+      requestAnimationFrame(() => {
+        sections.forEach((section, index) => {
+          section.style.setProperty("--mobile-section-y", `${(index - destination) * 100}dvh`);
+        });
+      });
+
+      return true;
+    };
+
+    const reset = () => {
+      activeTransitionCleanup?.();
+      transitioning = false;
+      touchStart = null;
+      gestureAxis = null;
+      touchIdentifier = null;
+      isScrolling = false;
+      targetSection = null;
+    };
+
+    mobileController = { navigateTo, reset };
+
+    const isCarouselGesture = (target) => target?.closest?.("#festivities-carousel");
+
+    window.addEventListener("touchstart", (event) => {
+      if (!scrollingUnlocked || transitioning || !event.touches.length) return;
+      if (isCarouselGesture(event.target)) return;
+      if (event.touches.length !== 1) {
+        touchStart = null;
+        gestureAxis = null;
+        touchIdentifier = null;
+        return;
+      }
+
+      touchStart = {
+        clientX: event.touches[0].clientX,
+        clientY: event.touches[0].clientY
+      };
+      touchIdentifier = event.touches[0].identifier;
+      gestureAxis = null;
+    }, { passive: true, capture: true });
+
+    window.addEventListener("touchmove", (event) => {
+      if (!touchStart || event.touches.length !== 1 || event.touches[0].identifier !== touchIdentifier) {
+        touchStart = null;
+        gestureAxis = null;
+        touchIdentifier = null;
+        return;
+      }
+
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - touchStart.clientX;
+      const deltaY = touch.clientY - touchStart.clientY;
+
+      if (!gestureAxis && Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 10) {
+        gestureAxis = Math.abs(deltaY) > Math.abs(deltaX) * 1.15 ? "vertical" : "horizontal";
+      }
+
+      if (gestureAxis === "vertical") event.preventDefault();
+    }, { passive: false, capture: true });
+
+    window.addEventListener("touchend", (event) => {
+      if (!touchStart) return;
+
+      const start = touchStart;
+      const identifier = touchIdentifier;
+      touchStart = null;
+      touchIdentifier = null;
+      if (!scrollingUnlocked || transitioning || gestureAxis !== "vertical" || event.touches.length !== 0) return;
+
+      const touch = event.changedTouches[0];
+      if (!touch || touch.identifier !== identifier) return;
+      const deltaY = touch.clientY - start.clientY;
+      if (Math.abs(deltaY) < 10) return;
+
+      navigateTo(currentSection + (deltaY < 0 ? 1 : -1));
+    }, { passive: true, capture: true });
+
+    window.addEventListener("touchcancel", () => {
+      touchStart = null;
+      gestureAxis = null;
+      touchIdentifier = null;
+    }, { passive: true, capture: true });
+
+    // Mobile navigation is touch-only. Ignore wheel input here so native
+    // wheel momentum cannot act as a second section-navigation mechanism.
+    window.addEventListener("wheel", (event) => {
+      if (mobileViewport.matches && scrollingUnlocked && !event.ctrlKey && !event.metaKey) {
+        event.preventDefault();
+      }
+    }, { passive: false, capture: true });
+  }
+
+  // Preserve the prior touch navigation for wide touch-enabled desktop screens.
+  let desktopTouchStartY = 0;
+  let desktopTouchStartX = 0;
+  let desktopTouchTarget = null;
+  let desktopTouchValid = false;
 
   window.addEventListener("touchstart", (event) => {
-
-    if (!event.touches.length) return;
-
-    const touch = event.touches[0];
-
-    touchStartY = touch.clientY;
-    touchStartX = touch.clientX;
-
-    touchStartTarget = event.target;
-    touchAxis = null;
-
-    validTouch = true;
-
+    if (mobileViewport.matches || !event.touches.length) return;
+    desktopTouchStartY = event.touches[0].clientY;
+    desktopTouchStartX = event.touches[0].clientX;
+    desktopTouchTarget = event.target;
+    desktopTouchValid = true;
   }, { passive: true });
-
-  // Disable native vertical panning/momentum on mobile so only one mechanism
-  // (the section navigator) can move the page for a swipe.
-  window.addEventListener("touchmove", (event) => {
-    if (!mobileViewport.matches || !validTouch || !event.touches.length) return;
-
-    if (touchStartTarget?.closest?.("#festivities-carousel")) return;
-
-    const touch = event.touches[0];
-    const deltaX = touch.clientX - touchStartX;
-    const deltaY = touch.clientY - touchStartY;
-
-    if (!touchAxis && Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 12) {
-      touchAxis = Math.abs(deltaY) > Math.abs(deltaX) * 1.2 ? "y" : "x";
-    }
-
-    if (touchAxis === "y") event.preventDefault();
-  }, { passive: false });
-
 
   window.addEventListener("touchend", (event) => {
-
-    if (!scrollingUnlocked || !validTouch) return;
-
-    validTouch = false;
-
-    if (isScrolling || touchLocked) return;
-
-    if (!event.changedTouches.length) return;
-
-    // Do not interfere with the festivities carousel.
-    if (
-      touchStartTarget &&
-      touchStartTarget.closest &&
-      touchStartTarget.closest("#festivities-carousel")
-    ) {
-      return;
-    }
+    if (mobileViewport.matches || !scrollingUnlocked || !desktopTouchValid) return;
+    desktopTouchValid = false;
+    if (isScrolling || touchLocked || !event.changedTouches.length) return;
+    if (desktopTouchTarget?.closest?.("#festivities-carousel")) return;
 
     const touch = event.changedTouches[0];
-
-    const differenceY = touchStartY - touch.clientY;
-    const differenceX = touchStartX - touch.clientX;
-
-    // Ignore horizontal gestures.
-    if (mobileViewport.matches) {
-      if (touchAxis !== "y" || Math.abs(differenceX) > Math.abs(differenceY) * 0.8) return;
-    } else if (Math.abs(differenceX) > Math.abs(differenceY)) {
-      return;
-    }
-
-    const swipeThreshold = mobileViewport.matches
-      ? 12
-      : TOUCH_THRESHOLD;
-
-    if (Math.abs(differenceY) < swipeThreshold) return;
+    const deltaY = desktopTouchStartY - touch.clientY;
+    const deltaX = desktopTouchStartX - touch.clientX;
+    if (Math.abs(deltaX) > Math.abs(deltaY) || Math.abs(deltaY) < TOUCH_THRESHOLD) return;
 
     touchLocked = true;
-
-    // The tracked section is the source of truth while mobile gestures navigate.
-    // This avoids a partially moved scroll position selecting the wrong section.
-    if (!mobileViewport.matches) currentSection = getCurrentSection();
-
-    const direction = differenceY > 0 ? 1 : -1;
-
-    const didNavigate = goToSection(currentSection + direction);
-
-    if (mobileViewport.matches && !didNavigate) {
-      touchLocked = false;
-    }
-
-    if (!mobileViewport.matches) {
-      setTimeout(() => {
-        touchLocked = false;
-      }, 1100);
-    }
-
+    currentSection = getCurrentSection();
+    goToSection(currentSection + (deltaY > 0 ? 1 : -1));
+    setTimeout(() => { touchLocked = false; }, 1100);
   }, { passive: true });
 
-
   window.addEventListener("touchcancel", () => {
-
-    validTouch = false;
-    touchAxis = null;
-
+    desktopTouchValid = false;
   }, { passive: true });
 
 
@@ -461,6 +557,19 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(wheelIdleTimer);
 
     window.scrollTo(0, 0);
+    mobileController?.reset();
+
+    document.documentElement.classList.remove("mobile-section-navigation");
+    document.body.classList.remove("mobile-section-navigation");
+    sections.forEach((section) => {
+      section.classList.remove(
+        "mobile-controlled-section",
+        "mobile-section-active",
+        "mobile-section-entering"
+      );
+      section.style.removeProperty("--mobile-section-y");
+      section.style.removeProperty("z-index");
+    });
 
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
@@ -592,12 +701,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function unlockScrolling() {
 
+    currentSection = 0;
+    setupMobileSectionController();
+
     document.documentElement.style.overflow = "";
     document.body.style.overflow = "";
 
     scrollingUnlocked = true;
-
-    currentSection = 0;
 
   }
 
@@ -727,6 +837,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("resize", () => {
 
+    if (mobileViewport.matches) return;
     if (!scrollingUnlocked || isScrolling) return;
 
     clearTimeout(resizeTimer);
