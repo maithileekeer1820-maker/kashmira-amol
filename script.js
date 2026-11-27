@@ -1,9 +1,9 @@
+
 /* ========================================
    LOAD DOORS FIRST
 ======================================== */
 
 (() => {
-
   const leftDoor = new Image();
   const rightDoor = new Image();
 
@@ -14,14 +14,14 @@
     leftDoor.decode(),
     rightDoor.decode()
   ])
-  .then(() => {
-    document.body.classList.add("doors-loaded");
-  })
-  .catch(() => {
-    document.body.classList.add("doors-loaded");
-  });
-
+    .then(() => {
+      document.body.classList.add("doors-loaded");
+    })
+    .catch(() => {
+      document.body.classList.add("doors-loaded");
+    });
 })();
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -35,14 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const petalContainer = document.getElementById("petal-container");
   const weddingDetails = document.getElementById("wedding-details");
 
-const sections = [
-  document.querySelector(".intro-section"),
-  weddingDetails,
-  document.getElementById("save-date"),
-  document.getElementById("festivities"),
-  document.getElementById("location"),
-  document.getElementById("regards")
-].filter(Boolean);
+  const sections = [
+    document.querySelector(".intro-section"),
+    weddingDetails,
+    document.getElementById("save-date"),
+    document.getElementById("festivities"),
+    document.getElementById("location"),
+    document.getElementById("regards")
+  ].filter(Boolean);
+
 
   if (!coverScreen || !openButton || !invitationScreen) {
     console.error("Wedding invitation elements are missing.");
@@ -66,15 +67,32 @@ const sections = [
 
 
   /* ========================================
-     SCROLL CONTROL
+     CROSS-DEVICE SECTION SCROLLING
   ======================================== */
 
   let currentSection = 0;
   let isScrolling = false;
   let scrollingUnlocked = false;
 
-  const SCROLL_DURATION = 1100;
+  let scrollEndTimer = null;
+
   const SCROLL_THRESHOLD = 25;
+  const SCROLL_END_DELAY = 180;
+
+
+  /* Get accurate section position */
+
+  function getSectionTop(section) {
+
+    return Math.max(
+      0,
+      section.getBoundingClientRect().top + window.scrollY
+    );
+
+  }
+
+
+  /* Find nearest section */
 
   function getCurrentSection() {
 
@@ -85,49 +103,108 @@ const sections = [
 
     sections.forEach((section, index) => {
 
-      const distance = Math.abs(section.offsetTop - scrollPosition);
+      const distance = Math.abs(
+        getSectionTop(section) - scrollPosition
+      );
 
       if (distance < closestDistance) {
+
         closestDistance = distance;
         closestIndex = index;
+
       }
 
     });
 
     return closestIndex;
+
   }
 
+
+  /* Navigate to a section */
 
   function goToSection(index) {
 
     if (index < 0 || index >= sections.length) return;
     if (isScrolling) return;
 
+    const targetTop = getSectionTop(sections[index]);
+
+    if (Math.abs(window.scrollY - targetTop) < 2) {
+
+      currentSection = index;
+      return;
+
+    }
+
     isScrolling = true;
     currentSection = index;
 
     window.scrollTo({
-      top: sections[index].offsetTop,
+
+      top: targetTop,
       behavior: "smooth"
+
     });
 
-    setTimeout(() => {
+  }
 
-      isScrolling = false;
-      currentSection = getCurrentSection();
 
-    }, SCROLL_DURATION);
+  /* Detect completed scrolling */
+
+  function finishSectionScroll() {
+
+    if (!isScrolling) return;
+
+    clearTimeout(scrollEndTimer);
+
+    isScrolling = false;
+
+    currentSection = getCurrentSection();
+
+  }
+
+
+  /* Native scroll completion support */
+
+  window.addEventListener("scroll", () => {
+
+    if (!scrollingUnlocked || !isScrolling) return;
+
+    clearTimeout(scrollEndTimer);
+
+    scrollEndTimer = setTimeout(() => {
+
+      finishSectionScroll();
+
+    }, SCROLL_END_DELAY);
+
+  }, { passive: true });
+
+
+  /* Modern browser scroll completion */
+
+  if ("onscrollend" in window) {
+
+    window.addEventListener("scrollend", () => {
+
+      finishSectionScroll();
+
+    });
 
   }
 
 
   /* ========================================
-     MOUSE WHEEL SCROLLING
+     DESKTOP MOUSE / TRACKPAD SCROLLING
   ======================================== */
 
   window.addEventListener("wheel", (event) => {
 
     if (!scrollingUnlocked) return;
+
+    // Allow browser zoom gestures.
+    if (event.ctrlKey || event.metaKey) return;
 
     if (Math.abs(event.deltaY) < SCROLL_THRESHOLD) return;
 
@@ -135,46 +212,13 @@ const sections = [
 
     if (isScrolling) return;
 
-    const direction = event.deltaY > 0 ? 1 : -1;
-
     currentSection = getCurrentSection();
+
+    const direction = event.deltaY > 0 ? 1 : -1;
 
     goToSection(currentSection + direction);
 
   }, { passive: false });
-
-
-  /* ========================================
-     TOUCH SWIPE SCROLLING
-  ======================================== */
-
-  let touchStartY = 0;
-
-  window.addEventListener("touchstart", (event) => {
-
-    touchStartY = event.touches[0].clientY;
-
-  }, { passive: true });
-
-
-  window.addEventListener("touchend", (event) => {
-
-    if (!scrollingUnlocked || isScrolling) return;
-
-    const touchEndY = event.changedTouches[0].clientY;
-    const difference = touchStartY - touchEndY;
-
-    if (Math.abs(difference) < 50) return;
-
-    currentSection = getCurrentSection();
-
-    if (difference > 0) {
-      goToSection(currentSection + 1);
-    } else {
-      goToSection(currentSection - 1);
-    }
-
-  }, { passive: true });
 
 
   /* ========================================
@@ -185,6 +229,20 @@ const sections = [
 
     if (!scrollingUnlocked || isScrolling) return;
 
+    const activeElement = document.activeElement;
+
+    // Do not interfere with interactive elements.
+    if (
+      activeElement &&
+      (
+        activeElement.isContentEditable ||
+        ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"]
+          .includes(activeElement.tagName)
+      )
+    ) {
+      return;
+    }
+
     if (
       event.key === "ArrowDown" ||
       event.key === "PageDown"
@@ -193,11 +251,12 @@ const sections = [
       event.preventDefault();
 
       currentSection = getCurrentSection();
+
       goToSection(currentSection + 1);
 
     }
 
-    if (
+    else if (
       event.key === "ArrowUp" ||
       event.key === "PageUp"
     ) {
@@ -205,6 +264,7 @@ const sections = [
       event.preventDefault();
 
       currentSection = getCurrentSection();
+
       goToSection(currentSection - 1);
 
     }
@@ -217,11 +277,15 @@ const sections = [
   ======================================== */
 
   if ("scrollRestoration" in history) {
+
     history.scrollRestoration = "manual";
+
   }
 
 
   function resetInvitation() {
+
+    clearTimeout(scrollEndTimer);
 
     window.scrollTo(0, 0);
 
@@ -248,8 +312,11 @@ const sections = [
     openButton.disabled = false;
 
     if (petalContainer) {
+
       petalContainer.innerHTML = "";
+
       petalContainer.classList.remove("petals-visible");
+
     }
 
     invitationStarted = false;
@@ -257,7 +324,7 @@ const sections = [
   }
 
 
-  // Always begin with closed doors
+  // Always begin with closed doors.
   resetInvitation();
 
 
@@ -265,29 +332,41 @@ const sections = [
      FADE-IN OBSERVER
   ======================================== */
 
-  const fadeElements = document.querySelectorAll(".fade-in-section");
+  const fadeElements = document.querySelectorAll(
+    ".fade-in-section"
+  );
 
   const fadeObserver = new IntersectionObserver(
+
     (entries) => {
 
       entries.forEach((entry) => {
 
         if (entry.isIntersecting) {
+
           entry.target.classList.add("visible");
+
         } else {
+
           entry.target.classList.remove("visible");
+
         }
 
       });
 
     },
+
     {
       threshold: 0.2
     }
+
   );
 
+
   fadeElements.forEach((element) => {
+
     fadeObserver.observe(element);
+
   });
 
 
@@ -302,6 +381,7 @@ const sections = [
     petalContainer.innerHTML = "";
 
     const isMobile = window.innerWidth <= 768;
+
     const petalCount = isMobile ? 22 : 40;
 
     for (let i = 0; i < petalCount; i++) {
@@ -352,6 +432,7 @@ const sections = [
     if (invitationStarted) return;
 
     invitationStarted = true;
+
     openButton.disabled = true;
 
     invitationScreen.classList.add("ganesha-preopen");
@@ -451,7 +532,9 @@ const sections = [
   window.addEventListener("pageshow", (event) => {
 
     if (event.persisted) {
+
       resetInvitation();
+
     }
 
   });
@@ -461,380 +544,418 @@ const sections = [
      HANDLE WINDOW RESIZE
   ======================================== */
 
+  let resizeTimer = null;
+
   window.addEventListener("resize", () => {
 
     if (!scrollingUnlocked || isScrolling) return;
 
-    currentSection = getCurrentSection();
+    clearTimeout(resizeTimer);
 
-    window.scrollTo({
-      top: sections[currentSection].offsetTop,
-      behavior: "instant"
-    });
+    resizeTimer = setTimeout(() => {
+
+      currentSection = getCurrentSection();
+
+      window.scrollTo(
+        0,
+        getSectionTop(sections[currentSection])
+      );
+
+    }, 150);
 
   });
-  /* ========================================
-   WEDDING FESTIVITIES CAROUSEL
-======================================== */
-
-const festivitiesCarousel = document.getElementById("festivities-carousel");
-
-const festivityCards = document.querySelectorAll(".festivity-card");
-
-const festivityDots = document.querySelectorAll(".festivity-dot");
-
-
-if (festivitiesCarousel && festivityCards.length) {
-
-  let activeFestivity = 0;
-
-  const totalFestivities = festivityCards.length;
 
 
   /* ========================================
-     UPDATE CAROUSEL
+     WEDDING FESTIVITIES CAROUSEL
   ======================================== */
 
-  function updateFestivitiesCarousel() {
+  const festivitiesCarousel = document.getElementById(
+    "festivities-carousel"
+  );
 
-    festivityCards.forEach((card, index) => {
+  const festivityCards = document.querySelectorAll(
+    ".festivity-card"
+  );
 
-      card.classList.remove(
-        "center",
-        "left",
-        "right",
-        "hidden"
-      );
-
-      let difference = index - activeFestivity;
-
-
-      /* Circular positioning */
-
-      if (difference > totalFestivities / 2) {
-
-        difference -= totalFestivities;
-
-      }
-
-      if (difference < -totalFestivities / 2) {
-
-        difference += totalFestivities;
-
-      }
+  const festivityDots = document.querySelectorAll(
+    ".festivity-dot"
+  );
 
 
-      /* Center */
+  if (festivitiesCarousel && festivityCards.length) {
 
-      if (difference === 0) {
+    let activeFestivity = 0;
 
-        card.classList.add("center");
-
-      }
+    const totalFestivities = festivityCards.length;
 
 
-      /* Previous */
+    /* ========================================
+       UPDATE CAROUSEL
+    ======================================== */
 
-      else if (difference === -1) {
+    function updateFestivitiesCarousel() {
 
-        card.classList.add("left");
+      festivityCards.forEach((card, index) => {
 
-      }
+        card.classList.remove(
+          "center",
+          "left",
+          "right",
+          "hidden"
+        );
 
-
-      /* Next */
-
-      else if (difference === 1) {
-
-        card.classList.add("right");
-
-      }
-
-
-      /* Remaining cards */
-
-      else {
-
-        card.classList.add("hidden");
-
-      }
-
-    });
+        let difference = index - activeFestivity;
 
 
-    /* Update dots */
+        /* Circular positioning */
 
-    festivityDots.forEach((dot, index) => {
+        if (difference > totalFestivities / 2) {
 
-      dot.classList.toggle(
-        "active",
-        index === activeFestivity
-      );
+          difference -= totalFestivities;
 
-    });
+        }
 
-  }
+        if (difference < -totalFestivities / 2) {
 
+          difference += totalFestivities;
 
-  /* ========================================
-     NEXT
-  ======================================== */
-
-  function nextFestivity() {
-
-    activeFestivity =
-
-      (activeFestivity + 1) % totalFestivities;
-
-    updateFestivitiesCarousel();
-
-  }
+        }
 
 
-  /* ========================================
-     PREVIOUS
-  ======================================== */
+        /* Center */
 
-  function previousFestivity() {
+        if (difference === 0) {
 
-    activeFestivity =
+          card.classList.add("center");
 
-      (activeFestivity - 1 + totalFestivities)
-
-      % totalFestivities;
-
-    updateFestivitiesCarousel();
-
-  }
+        }
 
 
-  /* ========================================
-     DOT NAVIGATION
-  ======================================== */
+        /* Previous */
 
-  festivityDots.forEach((dot, index) => {
+        else if (difference === -1) {
 
-    dot.addEventListener("click", () => {
+          card.classList.add("left");
 
-      activeFestivity = index;
+        }
+
+
+        /* Next */
+
+        else if (difference === 1) {
+
+          card.classList.add("right");
+
+        }
+
+
+        /* Remaining cards */
+
+        else {
+
+          card.classList.add("hidden");
+
+        }
+
+      });
+
+
+      /* Update dots */
+
+      festivityDots.forEach((dot, index) => {
+
+        dot.classList.toggle(
+          "active",
+          index === activeFestivity
+        );
+
+      });
+
+    }
+
+
+    /* ========================================
+       NEXT
+    ======================================== */
+
+    function nextFestivity() {
+
+      activeFestivity =
+        (activeFestivity + 1) % totalFestivities;
 
       updateFestivitiesCarousel();
 
+    }
+
+
+    /* ========================================
+       PREVIOUS
+    ======================================== */
+
+    function previousFestivity() {
+
+      activeFestivity =
+        (activeFestivity - 1 + totalFestivities) %
+        totalFestivities;
+
+      updateFestivitiesCarousel();
+
+    }
+
+
+    /* ========================================
+       DOT NAVIGATION
+    ======================================== */
+
+    festivityDots.forEach((dot, index) => {
+
+      dot.addEventListener("click", () => {
+
+        activeFestivity = index;
+
+        updateFestivitiesCarousel();
+
+      });
+
     });
 
-  });
+
+    /* ========================================
+       TOUCH / MOUSE / PEN SWIPE
+    ======================================== */
+
+    let startX = 0;
+    let endX = 0;
+
+    let isDragging = false;
+
+    let activePointerId = null;
+
+    const SWIPE_THRESHOLD = 40;
 
 
-  /* ========================================
-     SWIPE / DRAG
-  ======================================== */
+    festivitiesCarousel.addEventListener(
+      "pointerdown",
+      (event) => {
 
-  let startX = 0;
+        if (!event.isPrimary || event.button !== 0) return;
 
-  let endX = 0;
+        startX = event.clientX;
+        endX = startX;
 
-  let isDragging = false;
+        isDragging = true;
 
-  const SWIPE_THRESHOLD = 40;
+        activePointerId = event.pointerId;
 
+        if (festivitiesCarousel.setPointerCapture) {
 
-  festivitiesCarousel.addEventListener("pointerdown", (event) => {
+          festivitiesCarousel.setPointerCapture(
+            event.pointerId
+          );
 
-    startX = event.clientX;
+        }
 
-    endX = startX;
+        festivitiesCarousel.classList.add("dragging");
 
-    isDragging = true;
-
-    festivitiesCarousel.classList.add("dragging");
-
-  });
-
-
-  festivitiesCarousel.addEventListener("pointermove", (event) => {
-
-    if (!isDragging) return;
-
-    endX = event.clientX;
-
-  });
+      }
+    );
 
 
-  festivitiesCarousel.addEventListener("pointerup", (event) => {
+    festivitiesCarousel.addEventListener(
+      "pointermove",
+      (event) => {
 
-    if (!isDragging) return;
+        if (!isDragging) return;
 
-    endX = event.clientX;
+        if (event.pointerId !== activePointerId) return;
 
-    finishSwipe();
+        endX = event.clientX;
 
-  });
-
-
-  festivitiesCarousel.addEventListener("pointercancel", () => {
-
-    isDragging = false;
-
-    festivitiesCarousel.classList.remove("dragging");
-
-  });
+      }
+    );
 
 
-  festivitiesCarousel.addEventListener("pointerleave", (event) => {
+    festivitiesCarousel.addEventListener(
+      "pointerup",
+      (event) => {
 
-    if (!isDragging) return;
+        if (!isDragging) return;
 
-    if (event.buttons === 0) {
+        if (event.pointerId !== activePointerId) return;
 
-      endX = event.clientX;
+        endX = event.clientX;
 
-      finishSwipe();
+        finishSwipe();
+
+      }
+    );
+
+
+    festivitiesCarousel.addEventListener(
+      "pointercancel",
+      () => {
+
+        cancelSwipe();
+
+      }
+    );
+
+
+    festivitiesCarousel.addEventListener(
+      "lostpointercapture",
+      () => {
+
+        cancelSwipe();
+
+      }
+    );
+
+
+    /* ========================================
+       FINISH SWIPE
+    ======================================== */
+
+    function finishSwipe() {
+
+      if (!isDragging) return;
+
+      isDragging = false;
+
+      festivitiesCarousel.classList.remove("dragging");
+
+      const distance = startX - endX;
+
+      activePointerId = null;
+
+      if (Math.abs(distance) < SWIPE_THRESHOLD) return;
+
+      if (distance > 0) {
+
+        nextFestivity();
+
+      } else {
+
+        previousFestivity();
+
+      }
 
     }
 
-  });
 
+    /* ========================================
+       CANCEL SWIPE
+    ======================================== */
 
-  function finishSwipe() {
+    function cancelSwipe() {
 
-    if (!isDragging) return;
+      isDragging = false;
 
-    isDragging = false;
+      activePointerId = null;
 
-    festivitiesCarousel.classList.remove("dragging");
-
-    const distance = startX - endX;
-
-
-    if (Math.abs(distance) < SWIPE_THRESHOLD) return;
-
-
-    if (distance > 0) {
-
-      nextFestivity();
-
-    } else {
-
-      previousFestivity();
+      festivitiesCarousel.classList.remove("dragging");
 
     }
+
+
+    /* ========================================
+       KEYBOARD
+    ======================================== */
+
+    festivitiesCarousel.setAttribute("tabindex", "0");
+
+    festivitiesCarousel.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (event.key === "ArrowRight") {
+
+          event.preventDefault();
+
+          nextFestivity();
+
+        }
+
+        if (event.key === "ArrowLeft") {
+
+          event.preventDefault();
+
+          previousFestivity();
+
+        }
+
+      }
+    );
+
+
+    /* ========================================
+       INITIAL STATE
+    ======================================== */
+
+    updateFestivitiesCarousel();
 
   }
 
 
   /* ========================================
-     PREVENT PAGE SECTION SWIPE CONFLICT
+     COPY VENUE ADDRESS
   ======================================== */
 
-  festivitiesCarousel.addEventListener("touchstart", (event) => {
+  const copyLocationButton = document.getElementById(
+    "copy-location"
+  );
 
-    event.stopPropagation();
+  if (copyLocationButton) {
 
-  }, { passive: true });
+    copyLocationButton.addEventListener(
+      "click",
+      async () => {
 
+        const address =
+          "Raj Vilas Palace, Amer Road, near Jal Mahal, Jaipur 302002";
 
-  festivitiesCarousel.addEventListener("touchend", (event) => {
+        try {
 
-    event.stopPropagation();
+          await navigator.clipboard.writeText(address);
 
-  }, { passive: true });
+          copyLocationButton.textContent = "ADDRESS COPIED";
 
+          setTimeout(() => {
 
-  festivitiesCarousel.addEventListener("touchcancel", (event) => {
+            copyLocationButton.textContent = "COPY ADDRESS";
 
-    event.stopPropagation();
+          }, 2000);
 
-  }, { passive: true });
+        } catch (error) {
 
+          const textArea = document.createElement("textarea");
 
-  /* ========================================
-     KEYBOARD
-  ======================================== */
+          textArea.value = address;
 
-  festivitiesCarousel.setAttribute("tabindex", "0");
+          textArea.style.position = "fixed";
+          textArea.style.opacity = "0";
 
+          document.body.appendChild(textArea);
 
-  festivitiesCarousel.addEventListener("keydown", (event) => {
+          textArea.select();
 
-    if (event.key === "ArrowRight") {
+          document.execCommand("copy");
 
-      event.preventDefault();
+          textArea.remove();
 
-      nextFestivity();
+          copyLocationButton.textContent = "ADDRESS COPIED";
 
-    }
+          setTimeout(() => {
 
+            copyLocationButton.textContent = "COPY ADDRESS";
 
-    if (event.key === "ArrowLeft") {
+          }, 2000);
 
-      event.preventDefault();
+        }
 
-      previousFestivity();
+      }
+    );
 
-    }
-
-  });
-
-
-  /* ========================================
-     INITIAL STATE
-  ======================================== */
-
-  updateFestivitiesCarousel();
-
-}
-
-/* ========================================
-   COPY VENUE ADDRESS
-======================================== */
-
-const copyLocationButton = document.getElementById("copy-location");
-
-if (copyLocationButton) {
-
-  copyLocationButton.addEventListener("click", async () => {
-
-    const address =
-      "Raj Vilas Palace, Amer Road, near Jal Mahal, Jaipur 302002";
-
-    try {
-
-      await navigator.clipboard.writeText(address);
-
-      copyLocationButton.textContent = "ADDRESS COPIED";
-
-      setTimeout(() => {
-
-        copyLocationButton.textContent = "COPY ADDRESS";
-
-      }, 2000);
-
-    } catch (error) {
-
-      const textArea = document.createElement("textarea");
-
-      textArea.value = address;
-
-      document.body.appendChild(textArea);
-
-      textArea.select();
-
-      document.execCommand("copy");
-
-      textArea.remove();
-
-      copyLocationButton.textContent = "ADDRESS COPIED";
-
-      setTimeout(() => {
-
-        copyLocationButton.textContent = "COPY ADDRESS";
-
-      }, 2000);
-
-    }
-
-  });
-
-}
+  }
 
 });

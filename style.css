@@ -901,7 +901,7 @@ button {
   font-size: clamp(16px, 3.5vw, 29px);
   font-weight: 500;
   letter-spacing: 1px;
-  margin-top: -30px;
+  margin-top: -40px;
 }
 
 
@@ -1149,8 +1149,7 @@ button {
 
 .save-date-heading {
   font-family: "Sophillia", serif;
-  font-size: clamp(20px, 5vw, 30px);
-  font-weight: 600;
+  font-size: clamp(20px, 8vw, 40px);
 
   letter-spacing: 4px;
   color: #762b32;
@@ -2545,9 +2544,8 @@ font-weight: bold;
   width: 100%;
   max-width: 500px;
 
-  display: grid;
-
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+display: flex;
+    flex-direction: column;
 
   column-gap: 25px;
   row-gap: 18px;
@@ -2823,8 +2821,6 @@ font-weight: bold;
 
   .regards-contacts {
 
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
     column-gap: 10px;
 
     row-gap: 14px;
@@ -2851,8 +2847,18 @@ font-weight: bold;
 
     word-break: break-word;
 
-  }
 
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.contact-icon {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
 
   /* CLOSING */
 
@@ -2895,4 +2901,63 @@ font-weight: bold;
 
   }
 
+}
+
+/* ========================================
+   CROSS-DEVICE SCROLLING
+======================================== */
+
+html {
+  scroll-behavior: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior-y: none;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+/* Each invitation section */
+.intro-section,
+#wedding-details,
+#save-date,
+#festivities,
+#location,
+#regards {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* ========================================
+   MOBILE VIEWPORT SUPPORT
+======================================== */
+
+@supports (height: 100svh) {
+  .intro-section,
+  #wedding-details,
+  #save-date,
+  #festivities,
+  #location,
+  #regards {
+    min-height: 100svh;
+  }
+}
+
+/* ========================================
+   FESTIVITIES CAROUSEL
+======================================== */
+
+#festivities-carousel {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#festivities-carousel.dragging {
+  cursor: grabbing;
+}
+
+.festivity-card {
+  will-change: transform, opacity;
 }
