@@ -225,6 +225,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("wheel", (event) => {
 
+    // Touch devices use the controlled touch gesture below; keep desktop wheel behavior unchanged.
+    if (window.matchMedia("(max-width: 767px)").matches) return;
+
     if (!scrollingUnlocked) return;
 
     if (event.ctrlKey || event.metaKey) return;
@@ -264,6 +267,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let touchStartTarget = null;
   let validTouch = false;
+  let touchAxis = null;
+
+  const mobileViewport = window.matchMedia("(max-width: 767px)");
 
   window.addEventListener("touchstart", (event) => {
 
@@ -275,10 +281,29 @@ document.addEventListener("DOMContentLoaded", () => {
     touchStartX = touch.clientX;
 
     touchStartTarget = event.target;
+    touchAxis = null;
 
     validTouch = true;
 
   }, { passive: true });
+
+  // Disable native vertical panning/momentum on mobile so only one mechanism
+  // (the section navigator) can move the page for a swipe.
+  window.addEventListener("touchmove", (event) => {
+    if (!mobileViewport.matches || !validTouch || !event.touches.length) return;
+
+    if (touchStartTarget?.closest?.("#festivities-carousel")) return;
+
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (!touchAxis && Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 12) {
+      touchAxis = Math.abs(deltaY) > Math.abs(deltaX) * 1.2 ? "y" : "x";
+    }
+
+    if (touchAxis === "y") event.preventDefault();
+  }, { passive: false });
 
 
   window.addEventListener("touchend", (event) => {
@@ -306,9 +331,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const differenceX = touchStartX - touch.clientX;
 
     // Ignore horizontal gestures.
-    if (Math.abs(differenceX) > Math.abs(differenceY)) return;
+    if (mobileViewport.matches) {
+      if (touchAxis !== "y" || Math.abs(differenceX) > Math.abs(differenceY) * 0.8) return;
+    } else if (Math.abs(differenceX) > Math.abs(differenceY)) {
+      return;
+    }
 
-    if (Math.abs(differenceY) < TOUCH_THRESHOLD) return;
+    const swipeThreshold = mobileViewport.matches
+      ? Math.max(TOUCH_THRESHOLD, window.innerHeight * 0.06)
+      : TOUCH_THRESHOLD;
+
+    if (Math.abs(differenceY) < swipeThreshold) return;
 
     touchLocked = true;
 
@@ -330,6 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("touchcancel", () => {
 
     validTouch = false;
+    touchAxis = null;
 
   }, { passive: true });
 

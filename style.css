@@ -1109,6 +1109,85 @@ button {
 
 }
 
+@media (max-width: 767px) {
+  .regards-content {
+    width: 100%;
+  }
+
+  .regards-section {
+    justify-content: center;
+  }
+}
+
+/* Mobile viewport and section sizing overrides. Desktop rules above remain intact. */
+@media (max-width: 767px) {
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    scroll-snap-type: y mandatory;
+    overscroll-behavior-y: none;
+  }
+
+  .intro-section,
+  #wedding-details,
+  #save-date,
+  #festivities,
+  #location,
+  #regards {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    max-height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .intro-section {
+    min-height: 0;
+  }
+
+  .cover-screen {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  #save-date {
+    padding: clamp(16px, 4dvh, 35px) clamp(16px, 5vw, 24px);
+  }
+
+  .save-date-content {
+    max-height: 100%;
+    padding-top: 0;
+  }
+
+  #festivities {
+    padding: clamp(12px, 3dvh, 30px) clamp(8px, 3vw, 20px);
+  }
+
+  .festivities-heading {
+    margin-top: clamp(0px, 2dvh, 18px);
+  }
+
+  .festivities-carousel {
+    height: clamp(180px, 48dvh, 460px);
+    margin-top: clamp(8px, 2dvh, 20px);
+  }
+
+  .festivities-dots { margin-top: clamp(8px, 1.5dvh, 18px); }
+  .festivities-bottom-subtitle { margin-top: clamp(8px, 2dvh, 20px); }
+
+  #location, #regards {
+    padding: clamp(14px, 3dvh, 25px) clamp(14px, 5vw, 24px);
+  }
+
+  .location-content { margin-top: 0; }
+  .location-map { width: min(75%, 330px); margin-top: clamp(10px, 2dvh, 20px); }
+  .location-details { margin-top: clamp(10px, 2dvh, 22px); }
+  .location-buttons { margin-top: clamp(12px, 2.5dvh, 23px); }
+  .regards-content { width: min(100%, 430px); }
+}
+
 
 /* ========================================
    MOBILE PETAL SIZE
@@ -2923,5 +3002,15 @@ display: flex;
 
   }
 
+}
+
+/* Final mobile fit corrections take precedence over legacy small-phone rules. */
+@media (max-width: 767px) {
+  .intro-section { min-height: 0; }
+  .save-date-content { padding-top: 0; }
+  .location-content { margin-top: 0; }
+  #regards .regards-content {
+    width: 100%;
+  }
 }
 
