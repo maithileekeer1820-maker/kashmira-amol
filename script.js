@@ -4,6 +4,7 @@
 ======================================== */
 
 (() => {
+
   const leftDoor = new Image();
   const rightDoor = new Image();
 
@@ -20,6 +21,7 @@
     .catch(() => {
       document.body.classList.add("doors-loaded");
     });
+
 })();
 
 
@@ -67,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ========================================
-     CROSS-DEVICE SECTION SCROLLING
+     SECTION SCROLL CONTROL
   ======================================== */
 
   let currentSection = 0;
@@ -75,12 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let scrollingUnlocked = false;
 
   let scrollEndTimer = null;
+  let wheelLocked = false;
+  let touchLocked = false;
 
   const SCROLL_THRESHOLD = 25;
-  const SCROLL_END_DELAY = 180;
+  const TOUCH_THRESHOLD = 45;
+  const SCROLL_UNLOCK_DELAY = 300;
 
 
-  /* Get accurate section position */
+  /* ========================================
+     GET SECTION POSITION
+  ======================================== */
 
   function getSectionTop(section) {
 
@@ -92,7 +99,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /* Find nearest section */
+  /* ========================================
+     FIND CURRENT SECTION
+  ======================================== */
 
   function getCurrentSection() {
 
@@ -121,36 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /* Navigate to a section */
-
-  function goToSection(index) {
-
-    if (index < 0 || index >= sections.length) return;
-    if (isScrolling) return;
-
-    const targetTop = getSectionTop(sections[index]);
-
-    if (Math.abs(window.scrollY - targetTop) < 2) {
-
-      currentSection = index;
-      return;
-
-    }
-
-    isScrolling = true;
-    currentSection = index;
-
-    window.scrollTo({
-
-      top: targetTop,
-      behavior: "smooth"
-
-    });
-
-  }
-
-
-  /* Detect completed scrolling */
+  /* ========================================
+     FINISH SECTION SCROLL
+  ======================================== */
 
   function finishSectionScroll() {
 
@@ -162,10 +144,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentSection = getCurrentSection();
 
+    setTimeout(() => {
+
+      wheelLocked = false;
+      touchLocked = false;
+
+    }, SCROLL_UNLOCK_DELAY);
+
   }
 
 
-  /* Native scroll completion support */
+  /* ========================================
+     NAVIGATE TO SECTION
+  ======================================== */
+
+  function goToSection(index) {
+
+    if (index < 0 || index >= sections.length) return;
+    if (isScrolling) return;
+
+    isScrolling = true;
+
+    currentSection = index;
+
+    clearTimeout(scrollEndTimer);
+
+    window.scrollTo({
+
+      top: getSectionTop(sections[index]),
+      behavior: "smooth"
+
+    });
+
+    // Fallback for browsers without reliable scrollend.
+    scrollEndTimer = setTimeout(() => {
+
+      finishSectionScroll();
+
+    }, 1800);
+
+  }
+
+
+  /* ========================================
+     DETECT SCROLL COMPLETION
+  ======================================== */
 
   window.addEventListener("scroll", () => {
 
@@ -177,12 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       finishSectionScroll();
 
-    }, SCROLL_END_DELAY);
+    }, 180);
 
   }, { passive: true });
 
-
-  /* Modern browser scroll completion */
 
   if ("onscrollend" in window) {
 
@@ -196,21 +217,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ========================================
-     DESKTOP MOUSE / TRACKPAD SCROLLING
+     MOUSE WHEEL / TRACKPAD
+     ONE GESTURE = ONE SECTION
   ======================================== */
+
+  let wheelIdleTimer = null;
 
   window.addEventListener("wheel", (event) => {
 
     if (!scrollingUnlocked) return;
 
-    // Allow browser zoom gestures.
     if (event.ctrlKey || event.metaKey) return;
-
-    if (Math.abs(event.deltaY) < SCROLL_THRESHOLD) return;
 
     event.preventDefault();
 
-    if (isScrolling) return;
+    if (wheelLocked || isScrolling) return;
+
+    if (Math.abs(event.deltaY) < SCROLL_THRESHOLD) return;
+
+    wheelLocked = true;
 
     currentSection = getCurrentSection();
 
@@ -218,7 +243,95 @@ document.addEventListener("DOMContentLoaded", () => {
 
     goToSection(currentSection + direction);
 
+    clearTimeout(wheelIdleTimer);
+
+    wheelIdleTimer = setTimeout(() => {
+
+      wheelLocked = false;
+
+    }, 850);
+
   }, { passive: false });
+
+
+  /* ========================================
+     MOBILE TOUCH SWIPE
+     ONE SWIPE = ONE SECTION
+  ======================================== */
+
+  let touchStartY = 0;
+  let touchStartX = 0;
+
+  let touchStartTarget = null;
+  let validTouch = false;
+
+  window.addEventListener("touchstart", (event) => {
+
+    if (!event.touches.length) return;
+
+    const touch = event.touches[0];
+
+    touchStartY = touch.clientY;
+    touchStartX = touch.clientX;
+
+    touchStartTarget = event.target;
+
+    validTouch = true;
+
+  }, { passive: true });
+
+
+  window.addEventListener("touchend", (event) => {
+
+    if (!scrollingUnlocked || !validTouch) return;
+
+    validTouch = false;
+
+    if (isScrolling || touchLocked) return;
+
+    if (!event.changedTouches.length) return;
+
+    // Do not interfere with the festivities carousel.
+    if (
+      touchStartTarget &&
+      touchStartTarget.closest &&
+      touchStartTarget.closest("#festivities-carousel")
+    ) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+
+    const differenceY = touchStartY - touch.clientY;
+    const differenceX = touchStartX - touch.clientX;
+
+    // Ignore horizontal gestures.
+    if (Math.abs(differenceX) > Math.abs(differenceY)) return;
+
+    if (Math.abs(differenceY) < TOUCH_THRESHOLD) return;
+
+    touchLocked = true;
+
+    currentSection = getCurrentSection();
+
+    const direction = differenceY > 0 ? 1 : -1;
+
+    goToSection(currentSection + direction);
+
+    setTimeout(() => {
+
+      touchLocked = false;
+
+    }, 1100);
+
+  }, { passive: true });
+
+
+  window.addEventListener("touchcancel", () => {
+
+    validTouch = false;
+
+  }, { passive: true });
 
 
   /* ========================================
@@ -231,7 +344,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const activeElement = document.activeElement;
 
-    // Do not interfere with interactive elements.
     if (
       activeElement &&
       (
@@ -286,6 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetInvitation() {
 
     clearTimeout(scrollEndTimer);
+    clearTimeout(wheelIdleTimer);
 
     window.scrollTo(0, 0);
 
@@ -293,8 +406,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "hidden";
 
     scrollingUnlocked = false;
+
     currentSection = 0;
     isScrolling = false;
+
+    wheelLocked = false;
+    touchLocked = false;
+    validTouch = false;
 
     coverScreen.classList.remove(
       "opening",
@@ -607,9 +725,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let difference = index - activeFestivity;
 
-
-        /* Circular positioning */
-
         if (difference > totalFestivities / 2) {
 
           difference -= totalFestivities;
@@ -622,17 +737,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /* Center */
-
         if (difference === 0) {
 
           card.classList.add("center");
 
         }
-
-
-        /* Previous */
 
         else if (difference === -1) {
 
@@ -640,17 +749,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /* Next */
-
         else if (difference === 1) {
 
           card.classList.add("right");
 
         }
-
-
-        /* Remaining cards */
 
         else {
 
@@ -722,14 +825,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ========================================
-       TOUCH / MOUSE / PEN SWIPE
+       CAROUSEL SWIPE / DRAG
     ======================================== */
 
     let startX = 0;
     let endX = 0;
 
     let isDragging = false;
-
     let activePointerId = null;
 
     const SWIPE_THRESHOLD = 40;
@@ -794,27 +896,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     festivitiesCarousel.addEventListener(
       "pointercancel",
-      () => {
-
-        cancelSwipe();
-
-      }
+      cancelSwipe
     );
 
 
     festivitiesCarousel.addEventListener(
       "lostpointercapture",
-      () => {
-
-        cancelSwipe();
-
-      }
+      cancelSwipe
     );
 
-
-    /* ========================================
-       FINISH SWIPE
-    ======================================== */
 
     function finishSwipe() {
 
@@ -842,10 +932,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    /* ========================================
-       CANCEL SWIPE
-    ======================================== */
 
     function cancelSwipe() {
 

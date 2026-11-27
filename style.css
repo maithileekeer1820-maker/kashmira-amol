@@ -1,6 +1,28 @@
-/* ========================================
-   CUSTOM FONTS
-======================================== */
+html {
+  scroll-behavior: auto;
+  overscroll-behavior-y: none;
+}
+
+.intro-section,
+#wedding-details,
+#save-date,
+#festivities,
+#location,
+#regards {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+#festivities-carousel {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#festivities-carousel.dragging {
+  cursor: grabbing;
+}
 /* ========================================
    DOORS LOAD FIRST
 ======================================== */
@@ -2903,61 +2925,3 @@ display: flex;
 
 }
 
-/* ========================================
-   CROSS-DEVICE SCROLLING
-======================================== */
-
-html {
-  scroll-behavior: auto;
-  scroll-snap-type: y mandatory;
-  overscroll-behavior-y: none;
-}
-
-body {
-  overscroll-behavior-y: none;
-}
-
-/* Each invitation section */
-.intro-section,
-#wedding-details,
-#save-date,
-#festivities,
-#location,
-#regards {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-/* ========================================
-   MOBILE VIEWPORT SUPPORT
-======================================== */
-
-@supports (height: 100svh) {
-  .intro-section,
-  #wedding-details,
-  #save-date,
-  #festivities,
-  #location,
-  #regards {
-    min-height: 100svh;
-  }
-}
-
-/* ========================================
-   FESTIVITIES CAROUSEL
-======================================== */
-
-#festivities-carousel {
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-#festivities-carousel.dragging {
-  cursor: grabbing;
-}
-
-.festivity-card {
-  will-change: transform, opacity;
-}
