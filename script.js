@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let scrollEndTimer = null;
   let wheelLocked = false;
   let touchLocked = false;
+  let targetSection = null;
 
   const SCROLL_THRESHOLD = 25;
   const TOUCH_THRESHOLD = 45;
@@ -142,7 +143,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     isScrolling = false;
 
-    currentSection = getCurrentSection();
+    if (mobileViewport.matches && targetSection !== null) {
+      currentSection = targetSection;
+
+      const targetTop = getSectionTop(sections[currentSection]);
+      if (Math.abs(window.scrollY - targetTop) > 1) {
+        const previousBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = "auto";
+        window.scrollTo(0, targetTop);
+        document.documentElement.style.scrollBehavior = previousBehavior;
+      }
+    } else {
+      currentSection = getCurrentSection();
+    }
+
+    targetSection = null;
 
     setTimeout(() => {
 
@@ -160,12 +175,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function goToSection(index) {
 
-    if (index < 0 || index >= sections.length) return;
-    if (isScrolling) return;
+    if (index < 0 || index >= sections.length) return false;
+    if (isScrolling) return false;
 
     isScrolling = true;
 
     currentSection = index;
+    targetSection = index;
 
     clearTimeout(scrollEndTimer);
 
@@ -183,6 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }, 1800);
 
+    return true;
+
   }
 
 
@@ -196,11 +214,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     clearTimeout(scrollEndTimer);
 
+    const scrollSettleDelay = mobileViewport.matches ? 650 : 180;
+
     scrollEndTimer = setTimeout(() => {
 
       finishSectionScroll();
 
-    }, 180);
+    }, scrollSettleDelay);
 
   }, { passive: true });
 
@@ -338,24 +358,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const swipeThreshold = mobileViewport.matches
-      ? Math.max(TOUCH_THRESHOLD, window.innerHeight * 0.06)
+      ? 12
       : TOUCH_THRESHOLD;
 
     if (Math.abs(differenceY) < swipeThreshold) return;
 
     touchLocked = true;
 
-    currentSection = getCurrentSection();
+    // The tracked section is the source of truth while mobile gestures navigate.
+    // This avoids a partially moved scroll position selecting the wrong section.
+    if (!mobileViewport.matches) currentSection = getCurrentSection();
 
     const direction = differenceY > 0 ? 1 : -1;
 
-    goToSection(currentSection + direction);
+    const didNavigate = goToSection(currentSection + direction);
 
-    setTimeout(() => {
-
+    if (mobileViewport.matches && !didNavigate) {
       touchLocked = false;
+    }
 
-    }, 1100);
+    if (!mobileViewport.matches) {
+      setTimeout(() => {
+        touchLocked = false;
+      }, 1100);
+    }
 
   }, { passive: true });
 
@@ -443,6 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentSection = 0;
     isScrolling = false;
+    targetSection = null;
 
     wheelLocked = false;
     touchLocked = false;
